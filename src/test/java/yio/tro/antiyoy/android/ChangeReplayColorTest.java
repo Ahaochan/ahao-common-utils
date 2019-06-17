@@ -2,9 +2,9 @@ package yio.tro.antiyoy.android;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class ChangeReplayColorTest {
+class ChangeReplayColorTest {
     enum Color {
         RED(1), PURPLE(2);
         int code;
@@ -24,13 +24,10 @@ public class ChangeReplayColorTest {
 
 
     @Test
-    @Ignore("业务代码")
-    public void test() {
+    void test() {
         // 1. 获取所有 replay xml 文件
         Path dir = Paths.get("C:\\yio.tro.antiyoy.android\\shared_prefs");
-        if (Files.notExists(dir)) {
-            Assert.fail();
-        }
+        Assumptions.assumeTrue(Files.exists(dir), "文件夹不存在");
 
         try (DirectoryStream<Path> fs = Files.newDirectoryStream(dir, "[0-9]*.xml")) {
             for (Path path : fs) {
@@ -50,7 +47,7 @@ public class ChangeReplayColorTest {
             System.out.println("success");
         } catch (IOException e) {
             e.printStackTrace();
-            Assert.fail();
+            Assertions.fail();
         }
     }
 }
