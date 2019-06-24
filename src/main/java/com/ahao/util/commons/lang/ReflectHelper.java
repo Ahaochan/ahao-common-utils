@@ -100,20 +100,21 @@ public class ReflectHelper {
             return null;
         }
         Class<?> clazz = obj.getClass();
-        try {
-            Field field = null;
-            while(clazz != null && field == null) {
-                field = clazz.getDeclaredField(fieldName);
-                clazz = clazz.getSuperclass();
+        Field field = null;
+        while(clazz != null && field == null) {
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field f : fields) {
+                if(fieldName.equals(f.getName())) {
+                    field = f;
+                    break;
+                }
             }
-            if(field == null) {
-                logger.error("{}没有找到{}属性!", obj.getClass().getName(), fieldName);
-            }
-            return field;
-        } catch (NoSuchFieldException e) {
-            logger.error("{}没有找到{}属性!", clazz.getName(), fieldName);
-            return null;
+            clazz = clazz.getSuperclass();
         }
+        if(field == null) {
+            logger.error("{}没有找到{}属性!", obj.getClass().getName(), fieldName);
+        }
+        return field;
     }
     public static <T> T getValue(Object obj, String fieldName) {
         if(obj == null || StringUtils.isEmpty(fieldName)) {
