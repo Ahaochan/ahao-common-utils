@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.*;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -80,6 +77,51 @@ public class ReflectHelper {
             return null;
         }
         return (Class<T>) array[0].getClass();
+    }
+
+
+    public static Method getMethod(Class obj, String methodName, Class... parameterTypes) {
+        if(obj == null || StringUtils.isEmpty(methodName)) {
+            return null;
+        }
+        Class<?> clazz = obj;
+        Method method = null;
+        while(clazz != null && method == null) {
+            Method[] methods = clazz.getDeclaredMethods();
+            for (Method m : methods) {
+                if(methodName.equals(m.getName()) && Arrays.equals(m.getParameterTypes(), parameterTypes)) {
+                    method = m;
+                    break;
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+        if(method == null) {
+            logger.error("{}没有找到{}{}!", obj.getName(), methodName, Arrays.toString(parameterTypes));
+        }
+        return method;
+    }
+    public static <T> T executeMethod(Object obj, String methodName, Object... parameters) {
+        if(obj == null || StringUtils.isEmpty(methodName) || ArrayUtils.isEmpty(parameters)) {
+            return null;
+        }
+        Class<?> clazz = obj.getClass();
+        Class[] parameterTypes = Arrays.stream(parameters).map(Object::getClass).toArray(Class[]::new);
+        Method method = getMethod(clazz, methodName, parameterTypes);
+        if(method == null) {
+            return null;
+        }
+
+        boolean accessible = method.isAccessible();
+        method.setAccessible(true);
+        try {
+            return (T) method.invoke(obj, parameters);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            logger.error("执行{}方法失败!", methodName);
+        } finally {
+            method.setAccessible(accessible);
+        }
+        return null;
     }
 
     public static List<Field> getAllField(Object obj) {
