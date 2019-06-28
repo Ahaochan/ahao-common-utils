@@ -2,16 +2,17 @@ package com.ahao.util.spring.redis;
 
 import com.ahao.util.commons.lang.BeanHelper;
 import com.ahao.util.spring.SpringContextHolder;
-import org.apache.commons.beanutils.BeanMap;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class RedisHelper {
+    // ======================================== 依赖 ==================================================
     private volatile static RedisTemplate<String, Object> redisTemplate;
+    private volatile static StringRedisTemplate stringRedisTemplate;
     public static RedisTemplate<String, Object> getRedisTemplate() {
         if(redisTemplate == null) {
             synchronized (RedisHelper.class) {
@@ -22,7 +23,20 @@ public class RedisHelper {
         }
         return redisTemplate;
     }
+    public static StringRedisTemplate getStringRedisTemplate() {
+        if(stringRedisTemplate == null) {
+            synchronized (RedisHelper.class) {
+                if(stringRedisTemplate == null) {
+                    RedisHelper.stringRedisTemplate = SpringContextHolder.getBean("stringRedisTemplate");
+                }
+            }
+        }
+        return stringRedisTemplate;
+    }
 
+    // ======================================== 依赖 ==================================================
+
+    // ======================================== string ==================================================
     public static Boolean del(String key) {
         return getRedisTemplate().delete(key);
     }
@@ -30,62 +44,211 @@ public class RedisHelper {
         return getRedisTemplate().delete(Arrays.asList(keys));
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T get(String key, Class<T> clazz) {
-        // 1. 参数校验
-        if(StringUtils.isEmpty(key) || clazz == null) {
+    public static Boolean getBoolean(String key) {
+        String value = getString(key);
+        return value == null ? null : Boolean.valueOf(value);
+    }
+    public static Byte getByte(String key) {
+        String value = getString(key);
+        return value == null ? null : Byte.valueOf(value);
+    }
+    public static Short getShort(String key) {
+        String value = getString(key);
+        return value == null ? null : Short.valueOf(value);
+    }
+    public static Integer getInteger(String key) {
+        String value = getString(key);
+        return value == null ? null : Integer.valueOf(value);
+    }
+    public static Long getLong(String key) {
+        String value = getString(key);
+        return value == null ? null : Long.valueOf(value);
+    }
+    public static Float getFloat(String key) {
+        String value = getString(key);
+        return value == null ? null : Float.valueOf(value);
+    }
+    public static Double getDouble(String key) {
+        String value = getString(key);
+        return value == null ? null : Double.valueOf(value);
+    }
+    public static String getString(String key) {
+        return getStringRedisTemplate().boundValueOps(key).get();
+    }
+    public static <T> T getObject(String key, Class<T> clazz) {
+        // 1. 参数校验, 处理 void
+        if(StringUtils.isEmpty(key) || clazz == null || clazz == void.class || clazz == Void.class) {
             return null;
         }
 
-        // 2. 从 Redis 中获取数据
-        Object obj = getRedisTemplate().opsForValue().get(key);
+        // 2. 处理 基本数据 类型
+        if(clazz == boolean.class || clazz == Boolean.class) {
+            return (T) getBoolean(key);
+        }
+        if(clazz == byte.class || clazz == Byte.class) {
+            return (T) getByte(key);
+        }
+        if(clazz == short.class || clazz == Short.class) {
+            return (T) getShort(key);
+        }
+        if(clazz == char.class || clazz == Character.class) {
+            String value = getString(key);
+            return (T) Character.valueOf(value.charAt(0));
+        }
+        if(clazz == int.class || clazz == Integer.class) {
+            return (T) getInteger(key);
+        }
+        if(clazz == long.class || clazz == Long.class) {
+            return (T) getLong(key);
+        }
+        if(clazz == float.class || clazz == Float.class) {
+            return (T) getFloat(key);
+        }
+        if(clazz == double.class || clazz == Double.class) {
+            return (T) getDouble(key);
+        }
+        if(clazz == String.class) {
+            return (T) getString(key);
+        }
+        // 3. 处理 复杂 数据类型
+        Object obj = getRedisTemplate().boundValueOps(key).get();
         return BeanHelper.cast(obj, clazz);
     }
-    public static int getInt(String key) {
-        Object value = getRedisTemplate().opsForValue().get(key);
-        return value == null ? 0 : Integer.parseInt(value.toString());
-    }
-    public static long getLong(String key) {
-        Object value = getRedisTemplate().opsForValue().get(key);
-        return value == null ? 0 : Long.parseLong(value.toString());
-    }
 
+
+    public static <T extends Number> void set(String key, T value) {
+        set(key, value == null ? null : String.valueOf(value));
+    }
+    public static void set(String key, Boolean value) {
+        set(key, value == null ? null : String.valueOf(value));
+    }
+    public static void set(String key, String value) {
+        getStringRedisTemplate().boundValueOps(key).set(value);
+    }
     public static void set(String key, Object value) {
-        getRedisTemplate().opsForValue().set(key, value);
+        getRedisTemplate().boundValueOps(key).set(value);
+    }
+    public static <T extends Number> void setEx(String key, T value, long expiredSeconds) {
+        setEx(key, value == null ? null : String.valueOf(value), expiredSeconds);
+    }
+    public static void setEx(String key, Boolean value, long expiredSeconds) {
+        setEx(key, value == null ? null : String.valueOf(value), expiredSeconds);
+    }
+    public static void setEx(String key, String value, long expiredSeconds) {
+        getStringRedisTemplate().boundValueOps(key).set(value, expiredSeconds, TimeUnit.SECONDS);
     }
     public static void setEx(String key, Object value, long expiredSeconds) {
-        getRedisTemplate().opsForValue().set(key, value, expiredSeconds, TimeUnit.SECONDS);
+        getRedisTemplate().boundValueOps(key).set(value, expiredSeconds, TimeUnit.SECONDS);
+    }
+    public static <T extends Number> Boolean setNx(String key, T value, long expiredSeconds) {
+        return setNx(key, value == null ? null : String.valueOf(value), expiredSeconds);
+    }
+    public static Boolean setNx(String key, Boolean value, long expiredSeconds) {
+        return setNx(key, value == null ? null : String.valueOf(value), expiredSeconds);
+    }
+    public static Boolean setNx(String key, String value, long expiredSeconds) {
+        return getStringRedisTemplate().boundValueOps(key).setIfAbsent(value, expiredSeconds, TimeUnit.SECONDS);
     }
     public static Boolean setNx(String key, Object value, long expiredSeconds) {
-        return getRedisTemplate().opsForValue().setIfAbsent(key, value, expiredSeconds, TimeUnit.SECONDS);
+        return getRedisTemplate().boundValueOps(key).setIfAbsent(value, expiredSeconds, TimeUnit.SECONDS);
     }
+
 
     public static Long incr(String key) {
-        return getRedisTemplate().opsForValue().increment(key);
+        return incr(key, 1);
+    }
+    public static Long incr(String key, long value) {
+        return getStringRedisTemplate().boundValueOps(key).increment(value);
     }
     public static Long decr(String key) {
-        return getRedisTemplate().opsForValue().decrement(key);
+        return decr(key, 1);
     }
-
+    public static Long decr(String key, long value) {
+        return getStringRedisTemplate().boundValueOps(key).decrement(value);
+    }
+    // ======================================== string ==================================================
 
     // ======================================== hash ==================================================
-    public static <T> T hget(String key, Class<T> clazz) {
-        Map entries = getRedisTemplate().boundHashOps(key).entries();
-        return BeanHelper.toBean(entries, clazz);
-    }
-    public static <T> T hget(String key, Object field, Class<T> clazz) {
-        Object value = getRedisTemplate().boundHashOps(key).get(field);
-        return BeanHelper.cast(value, clazz);
+    public static long hdel(String key, Object... fields) {
+        Long count = getRedisTemplate().boundHashOps(key).delete(fields);
+        return count == null ? 0 : count;
     }
 
-    public static void hset(String key, Object field, Object value) {
-        getRedisTemplate().boundHashOps(key).put(field, value);
+    public static boolean hexists(String key, Object field) {
+        Boolean exist = getRedisTemplate().boundHashOps(key).hasKey(field);
+        return exist == null ? false : exist;
     }
-    public static void hset(String key, Object hash) {
-        hset(key, new BeanMap(hash));
+
+    public static Boolean hgetBoolean(String key, Object field) {
+        String value = hgetString(key, field);
+        return value == null ? null : Boolean.valueOf(value);
     }
-    public static void hset(String key, Map hash) {
-        getRedisTemplate().opsForHash().putAll(key, hash);
+    public static Byte hgetByte(String key, Object field) {
+        String value = hgetString(key, field);
+        return value == null ? null : Byte.valueOf(value);
+    }
+    public static Short hgetShort(String key, Object field) {
+        String value = hgetString(key, field);
+        return value == null ? null : Short.valueOf(value);
+    }
+    public static Integer hgetInteger(String key, Object field) {
+        String value = hgetString(key, field);
+        return value == null ? null : Integer.valueOf(value);
+    }
+    public static Long hgetLong(String key, Object field) {
+        String value = hgetString(key, field);
+        return value == null ? null : Long.valueOf(value);
+    }
+    public static Float hgetFloat(String key, Object field) {
+        String value = hgetString(key, field);
+        return value == null ? null : Float.valueOf(value);
+    }
+    public static Double hgetDouble(String key, Object field) {
+        String value = hgetString(key, field);
+        return value == null ? null : Double.valueOf(value);
+    }
+    public static String hgetString(String key, Object field) {
+        Object value = getStringRedisTemplate().boundHashOps(key).get(field);
+        return value == null ? null : String.valueOf(value);
+    }
+    public static <T> T hgetObject(String key, String field, Class<T> clazz) {
+        // 1. 参数校验, 处理 void
+        if(StringUtils.isEmpty(key) || clazz == null || clazz == void.class || clazz == Void.class) {
+            return null;
+        }
+
+        // 2. 处理 基本数据 类型
+        if(clazz == boolean.class || clazz == Boolean.class) {
+            return (T) hgetBoolean(key, field);
+        }
+        if(clazz == byte.class || clazz == Byte.class) {
+            return (T) hgetByte(key, field);
+        }
+        if(clazz == short.class || clazz == Short.class) {
+            return (T) hgetShort(key, field);
+        }
+        if(clazz == char.class || clazz == Character.class) {
+            String value = hgetString(key, field);
+            return (T) Character.valueOf(value.charAt(0));
+        }
+        if(clazz == int.class || clazz == Integer.class) {
+            return (T) hgetInteger(key, field);
+        }
+        if(clazz == long.class || clazz == Long.class) {
+            return (T) hgetLong(key, field);
+        }
+        if(clazz == float.class || clazz == Float.class) {
+            return (T) hgetFloat(key, field);
+        }
+        if(clazz == double.class || clazz == Double.class) {
+            return (T) hgetDouble(key, field);
+        }
+        if(clazz == String.class) {
+            return (T) hgetString(key, field);
+        }
+        // 3. 处理 复杂 数据类型
+        Object obj = getRedisTemplate().boundHashOps(key).get(field);
+        return BeanHelper.cast(obj, clazz);
     }
 
     // ======================================== hash ==================================================

@@ -22,6 +22,9 @@ public class BeanHelper {
 
         // 2. 从 Redis 中获取数据
         String string = String.valueOf(obj);
+        if(clazz == String.class) {
+            return (T) string;
+        }
 
         // 3. 处理 char 类型
         if(clazz == char.class || clazz == Character.class) {
