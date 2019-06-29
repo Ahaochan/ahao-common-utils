@@ -3,6 +3,7 @@ package com.ahao.util.spring.redis;
 import com.ahao.util.commons.lang.BeanHelper;
 import com.ahao.util.spring.SpringContextHolder;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.connection.RedisServerCommands;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
@@ -48,6 +49,9 @@ public class RedisHelper {
         return getRedisTemplate().delete(Arrays.asList(keys));
     }
 
+    public static Long dbSize() {
+        return getStringRedisTemplate().execute(RedisServerCommands::dbSize);
+    }
     public static Set<String> keys(String pattern) {
         Set<String> keys = new HashSet<>();
         scan(pattern, keys::add);
