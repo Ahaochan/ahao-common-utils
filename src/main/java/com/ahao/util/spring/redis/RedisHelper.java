@@ -3,11 +3,15 @@ package com.ahao.util.spring.redis;
 import com.ahao.util.commons.lang.BeanHelper;
 import com.ahao.util.spring.SpringContextHolder;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.serializer.RedisSerializer;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class RedisHelper {
     // ======================================== 依赖 ==================================================
@@ -36,7 +40,7 @@ public class RedisHelper {
 
     // ======================================== 依赖 ==================================================
 
-    // ======================================== string ==================================================
+
     public static Boolean del(String key) {
         return getRedisTemplate().delete(key);
     }
@@ -44,6 +48,13 @@ public class RedisHelper {
         return getRedisTemplate().delete(Arrays.asList(keys));
     }
 
+    public static Set<String> keys(String pattern) {
+        Set<String> keys = new HashSet<>();
+        scan(pattern, keys::add);
+        return keys;
+    }
+
+    // ======================================== string ==================================================
     public static Boolean getBoolean(String key) {
         String value = getString(key);
         return value == null ? null : Boolean.valueOf(value);
@@ -73,7 +84,7 @@ public class RedisHelper {
         return value == null ? null : Double.valueOf(value);
     }
     public static String getString(String key) {
-        return getStringRedisTemplate().boundValueOps(key).get();
+        return getStringRedisTemplate().opsForValue().get(key);
     }
     public static <T> T getObject(String key, Class<T> clazz) {
         // 1. 参数校验, 处理 void
@@ -111,7 +122,7 @@ public class RedisHelper {
             return (T) getString(key);
         }
         // 3. 处理 复杂 数据类型
-        Object obj = getRedisTemplate().boundValueOps(key).get();
+        Object obj = getRedisTemplate().opsForValue().get(key);
         return BeanHelper.cast(obj, clazz);
     }
 
@@ -123,10 +134,10 @@ public class RedisHelper {
         set(key, value == null ? null : String.valueOf(value));
     }
     public static void set(String key, String value) {
-        getStringRedisTemplate().boundValueOps(key).set(value);
+        getStringRedisTemplate().opsForValue().set(key, value);
     }
     public static void set(String key, Object value) {
-        getRedisTemplate().boundValueOps(key).set(value);
+        getRedisTemplate().opsForValue().set(key, value);
     }
     public static <T extends Number> void setEx(String key, T value, long expiredSeconds) {
         setEx(key, value == null ? null : String.valueOf(value), expiredSeconds);
@@ -135,10 +146,10 @@ public class RedisHelper {
         setEx(key, value == null ? null : String.valueOf(value), expiredSeconds);
     }
     public static void setEx(String key, String value, long expiredSeconds) {
-        getStringRedisTemplate().boundValueOps(key).set(value, expiredSeconds, TimeUnit.SECONDS);
+        getStringRedisTemplate().opsForValue().set(key, value, expiredSeconds, TimeUnit.SECONDS);
     }
     public static void setEx(String key, Object value, long expiredSeconds) {
-        getRedisTemplate().boundValueOps(key).set(value, expiredSeconds, TimeUnit.SECONDS);
+        getRedisTemplate().opsForValue().set(key, value, expiredSeconds, TimeUnit.SECONDS);
     }
     public static <T extends Number> Boolean setNx(String key, T value, long expiredSeconds) {
         return setNx(key, value == null ? null : String.valueOf(value), expiredSeconds);
@@ -147,35 +158,54 @@ public class RedisHelper {
         return setNx(key, value == null ? null : String.valueOf(value), expiredSeconds);
     }
     public static Boolean setNx(String key, String value, long expiredSeconds) {
-        return getStringRedisTemplate().boundValueOps(key).setIfAbsent(value, expiredSeconds, TimeUnit.SECONDS);
+        return getStringRedisTemplate().opsForValue().setIfAbsent(key, value, expiredSeconds, TimeUnit.SECONDS);
     }
     public static Boolean setNx(String key, Object value, long expiredSeconds) {
-        return getRedisTemplate().boundValueOps(key).setIfAbsent(value, expiredSeconds, TimeUnit.SECONDS);
+        return getRedisTemplate().opsForValue().setIfAbsent(key, value, expiredSeconds, TimeUnit.SECONDS);
     }
 
 
     public static Long incr(String key) {
-        return incr(key, 1);
+        return getStringRedisTemplate().opsForValue().increment(key);
     }
     public static Long incr(String key, long value) {
-        return getStringRedisTemplate().boundValueOps(key).increment(value);
+        return getStringRedisTemplate().opsForValue().increment(key, value);
     }
     public static Long decr(String key) {
-        return decr(key, 1);
+        return getStringRedisTemplate().opsForValue().decrement(key);
     }
     public static Long decr(String key, long value) {
-        return getStringRedisTemplate().boundValueOps(key).decrement(value);
+        return getStringRedisTemplate().opsForValue().decrement(key, value);
+    }
+
+    public static void scan(String pattern, Consumer<String> consumer) {
+        RedisSerializer<String> keySerializer = (RedisSerializer<String>) getStringRedisTemplate().getKeySerializer();
+
+        ScanOptions options = ScanOptions.scanOptions().match(pattern).count(10).build();
+        try(Cursor<String> cursor = getStringRedisTemplate().executeWithStickyConnection((RedisCallback<Cursor<String>>) connection ->
+            new ConvertingCursor<>(connection.scan(options), keySerializer::deserialize))) {
+
+            if(cursor == null) {
+                return;
+            }
+            while (cursor.hasNext()) {
+                String key = cursor.next();
+                consumer.accept(key);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     // ======================================== string ==================================================
 
     // ======================================== hash ==================================================
     public static long hdel(String key, Object... fields) {
-        Long count = getRedisTemplate().boundHashOps(key).delete(fields);
+        Long count = getRedisTemplate().opsForHash().delete(key, fields);
         return count == null ? 0 : count;
     }
 
     public static boolean hexists(String key, Object field) {
-        Boolean exist = getRedisTemplate().boundHashOps(key).hasKey(field);
+        Boolean exist = getRedisTemplate().opsForHash().hasKey(key, field);
         return exist == null ? false : exist;
     }
 
@@ -208,7 +238,7 @@ public class RedisHelper {
         return value == null ? null : Double.valueOf(value);
     }
     public static String hgetString(String key, Object field) {
-        Object value = getStringRedisTemplate().boundHashOps(key).get(field);
+        Object value = getStringRedisTemplate().opsForHash().get(key, field);
         return value == null ? null : String.valueOf(value);
     }
     public static <T> T hgetObject(String key, String field, Class<T> clazz) {
@@ -247,9 +277,21 @@ public class RedisHelper {
             return (T) hgetString(key, field);
         }
         // 3. 处理 复杂 数据类型
-        Object obj = getRedisTemplate().boundHashOps(key).get(field);
+        Object obj = getRedisTemplate().opsForHash().get(key, field);
         return BeanHelper.cast(obj, clazz);
     }
 
+    public static Long hincrBy(String key, Object field, long value) {
+        return getStringRedisTemplate().opsForHash().increment(key, field, value);
+    }
+    public static Double hincrBy(String key, Object field, double value) {
+        return getStringRedisTemplate().opsForHash().increment(key, field, value);
+    }
+    public static Long hdecrBy(String key, Object field, long value) {
+        return getStringRedisTemplate().opsForHash().increment(key, field, value * -1);
+    }
+    public static Double hdecrBy(String key, Object field, double value) {
+        return getStringRedisTemplate().opsForHash().increment(key, field, value * -1);
+    }
     // ======================================== hash ==================================================
 }
