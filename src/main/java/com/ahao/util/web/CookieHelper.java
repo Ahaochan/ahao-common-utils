@@ -23,6 +23,14 @@ public abstract class CookieHelper {
 
     /**
      * 向response中追加Cookie, 不能删除或覆盖, 要在客户端进行
+     * @param cookie Cookie
+     */
+    public static void setCookie(Cookie cookie, HttpServletResponse response) {
+        response.addCookie(cookie);
+    }
+
+    /**
+     * 向response中追加Cookie, 不能删除或覆盖, 要在客户端进行
      * @param name Cookie名称
      */
     public static void setCookie(String name, String value, HttpServletResponse response) {
