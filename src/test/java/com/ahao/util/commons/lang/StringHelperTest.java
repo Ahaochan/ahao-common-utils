@@ -19,6 +19,30 @@ class StringHelperTest {
         Assertions.assertEquals("%7B%22abc%22%3A%22123%22%7D", urlEncode("{\"abc\":\"123\"}", StandardCharsets.UTF_8));
     }
 
+    @Test
+    void urlMatchTest() {
+        Assertions.assertTrue(urlMatch("com/t?st.jsp", "com/test.jsp"));
+        Assertions.assertTrue(urlMatch("com/t?st.jsp", "com/tast.jsp"));
+        Assertions.assertTrue(urlMatch("com/t?st.jsp", "com/txst.jsp"));
+        Assertions.assertFalse(urlMatch("com/t?st.jsp", "com/tst.jsp"));
+        Assertions.assertFalse(urlMatch("com/t?st.jsp", "com/test1.jsp"));
+        Assertions.assertFalse(urlMatch("com/t?st.jsp", "com/test"));
+
+        Assertions.assertTrue(urlMatch("com/*.jsp", "com/123.jsp"));
+        Assertions.assertTrue(urlMatch("com/*.jsp", "com/abc.jsp"));
+        Assertions.assertTrue(urlMatch("com/*.jsp", "com/.jsp"));
+
+        Assertions.assertTrue(urlMatch("com/**/test.jsp", "com/a/test.jsp"));
+        Assertions.assertTrue(urlMatch("com/**/test.jsp", "com/a/b/test.jsp"));
+        Assertions.assertTrue(urlMatch("com/**/test.jsp", "com/test.jsp"));
+        Assertions.assertTrue(urlMatch("com/**/*.jsp", "com/a/test.jsp"));
+        Assertions.assertTrue(urlMatch("com/**/*.jsp", "com/a/abc.jsp"));
+        Assertions.assertTrue(urlMatch("com/**/*.jsp", "com/a/b/test.jsp"));
+        Assertions.assertTrue(urlMatch("com/**/*.jsp", "com/a/b/abc.jsp"));
+        Assertions.assertTrue(urlMatch("com/**/*.jsp", "com/test.jsp"));
+        Assertions.assertTrue(urlMatch("com/**/*.jsp", "com/abc.jsp"));
+    }
+
 
     // ====================================== 汉字处理相关 ==================================================
     @Test

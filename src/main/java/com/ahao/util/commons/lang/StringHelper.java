@@ -2,6 +2,7 @@ package com.ahao.util.commons.lang;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.util.AntPathMatcher;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -87,7 +88,6 @@ public class StringHelper {
     public static String urlEncode(char ch, Charset encoding) {
         return urlEncode(String.valueOf(ch), encoding);
     }
-
     public static String urlEncode(String string, Charset encoding) {
         try {
             return URLEncoder.encode(string, encoding.name());
@@ -95,7 +95,9 @@ public class StringHelper {
         }
         return null;
     }
-
+    public static boolean urlMatch(String pattern, String path) {
+        return new AntPathMatcher().match(pattern, path);
+    }
     public static String null2Empty(String str) {
         return str == null ? "" : str;
     }
