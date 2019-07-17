@@ -5,6 +5,9 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
 /**
  * Created by Ahaochan on 2017/8/1.
  *
@@ -63,6 +66,23 @@ public class NumberHelper {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    public static boolean equals(Number a, Number b) {
+        if(a == b) {
+            return true;
+        }
+        if(a == null || b == null) {
+            return false;
+        }
+        Class clazzA = a.getClass(), clazzB = b.getClass();
+        if(clazzA == clazzB) {
+            return Objects.equals(a, b);
+        }
+
+        BigDecimal ba = BigDecimal.valueOf(a.doubleValue());
+        BigDecimal bb = BigDecimal.valueOf(b.doubleValue());
+        return ba.compareTo(bb) == 0;
     }
 
 }
