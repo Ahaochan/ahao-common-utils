@@ -5,10 +5,12 @@ import com.ahao.util.spring.SpringContextHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.connection.RedisServerCommands;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -298,4 +300,37 @@ public class RedisHelper {
         return getStringRedisTemplate().opsForHash().increment(key, field, value * -1);
     }
     // ======================================== hash ==================================================
+
+    // ======================================== 分布式锁 ==================================================
+    public static boolean lock(String key, String unionId) {
+        return lock(key, unionId, 60);
+    }
+    public static boolean lock(String key, String unionId, int expireSeconds) {
+        Boolean success = getStringRedisTemplate().opsForValue().setIfAbsent(key, unionId, expireSeconds, TimeUnit.SECONDS);
+        return success != null && success;
+    }
+    public static boolean lockBlock(String key, String unionId) {
+        return lockBlock(key, unionId, Long.MAX_VALUE);
+    }
+    public static boolean lockBlock(String key, String unionId, long blockTime) {
+        while (blockTime > 0) {
+            if(lock(key, unionId)) {
+                return true;
+            }
+            try {
+                blockTime -= 1000;
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException("Unexpected interrupt", e);
+            }
+        }
+        return false;
+    }
+    public static boolean unlock(String key, String unionId){
+        String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(script, Long.class);
+        Long count = getStringRedisTemplate().execute(redisScript, Collections.singletonList(key), unionId);
+        return count != null && count > 0;
+    }
+    // ======================================== 分布式锁 ==================================================
 }
