@@ -193,6 +193,10 @@ public class ReflectHelper {
         if(obj == null || field == null) {
             return false;
         }
+        if(Modifier.isFinal(field.getModifiers())) {
+            logger.debug("final 修饰的变量{}不能被修改", field.getName());
+            return false;
+        }
 
         Class<?> typeClazz = field.getType();
         boolean accessible = field.isAccessible();
@@ -260,6 +264,10 @@ public class ReflectHelper {
             // 10. 解析为 Date
             else if (typeClazz.equals(Date.class)) {
                 field.set(obj, DateHelper.getDate(value.toString(), "yyyy-MM-dd hh:mm:ss"));
+            }
+            // 11. 解析为 Object
+            else if (typeClazz.equals(Object.class)) {
+                field.set(obj, value);
             }
             // 解析失败
             else {
