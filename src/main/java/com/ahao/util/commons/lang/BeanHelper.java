@@ -5,6 +5,12 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
@@ -76,5 +82,35 @@ public class BeanHelper {
             ReflectHelper.setValue(obj, field.getKey(), field.getValue());
         }
         return obj;
+    }
+
+    public static String obj2xml(Object obj) {
+        try {
+            // 1. 创建 序列化器
+            JAXBContext jaxbContext= JAXBContext.newInstance(obj.getClass());
+            Marshaller marshaller = jaxbContext.createMarshaller();
+
+            // 2. 配置序列化属性
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+
+            // 3. 序列化
+            StringWriter writer = new StringWriter();
+            marshaller.marshal(obj, writer);
+            return writer.toString();
+        } catch (JAXBException e) {
+            logger.warn("{}序列化XML失败", obj, e);
+        }
+        return "";
+    }
+
+    public static <T> T xml2obj(String xml, Class<T> clazz) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            return (T) unmarshaller.unmarshal(new StringReader(xml));
+        } catch (JAXBException e) {
+            logger.warn("{}反序列化XML失败", xml, e);
+        }
+        return null;
     }
 }

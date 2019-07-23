@@ -36,6 +36,9 @@ public class AjaxDTO implements Serializable{
     private String msg;
     private Object obj;
 
+    private AjaxDTO() {
+    }
+
     private AjaxDTO(int result, String msg, Object obj) {
         this.result = result;
         this.msg = msg;
