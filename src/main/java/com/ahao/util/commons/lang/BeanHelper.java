@@ -1,13 +1,13 @@
 package com.ahao.util.commons.lang;
 
-import org.apache.commons.beanutils.BeanMap;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BeanHelper {
@@ -20,7 +20,7 @@ public class BeanHelper {
             return null;
         }
 
-        // 2. 从 Redis 中获取数据
+        // 2. 转为 String
         String string = String.valueOf(obj);
         if(clazz == String.class) {
             return (T) string;
@@ -55,22 +55,26 @@ public class BeanHelper {
         return (T) obj;
     }
 
-    public static Map toMap(Object obj) {
-        return new BeanMap(obj);
+    public static Map<String, Object> obj2map(Object obj) {
+        Map<String, Object> map = new HashMap<>();
+
+        List<Field> fields = ReflectHelper.getAllField(obj);
+        for (Field field : fields) {
+            map.put(field.getName(), ReflectHelper.getValue(obj, field));
+        }
+
+        return map;
     }
 
-    public static <T> T toBean(Map map, Class<T> clazz) {
+    public static <T> T map2obj(Map<String, Object> map, Class<T> clazz) {
         if(clazz == null || MapUtils.isEmpty(map)) {
             return null;
         }
 
         T obj = ReflectHelper.create(clazz);
-        try {
-            BeanUtils.populate(obj, map);
-            return obj;
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            logger.error("转为Bean失败", e);
+        for (Map.Entry<String, Object> field : map.entrySet()) {
+            ReflectHelper.setValue(obj, field.getKey(), field.getValue());
         }
-        return null;
+        return obj;
     }
 }
