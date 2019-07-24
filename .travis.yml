@@ -7,7 +7,7 @@ jdk:
 # 设置只监听哪个分支
 branches:
   only:
-    - source
+    - master
 cache:
   directories:
     - "$HOME/.m2"
