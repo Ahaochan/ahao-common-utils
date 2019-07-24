@@ -3,6 +3,8 @@ package com.ahao.util.spring.redis;
 import com.ahao.util.commons.lang.BeanHelper;
 import com.ahao.util.spring.SpringContextHolder;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.RedisServerCommands;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -17,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class RedisHelper {
+    private static final Logger logger = LoggerFactory.getLogger(RedisHelper.class);
     // ======================================== 依赖 ==================================================
     private volatile static RedisTemplate<String, Object> redisTemplate;
     private volatile static StringRedisTemplate stringRedisTemplate;
@@ -321,7 +324,7 @@ public class RedisHelper {
                 blockTime -= 1000;
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                throw new RuntimeException("Unexpected interrupt", e);
+                logger.error("线程中断", e);
             }
         }
         return false;
