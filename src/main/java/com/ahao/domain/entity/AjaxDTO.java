@@ -11,6 +11,19 @@ public class AjaxDTO implements Serializable{
     public static final int FAILURE = 0;
     public static final int SUCCESS = 1;
 
+    private int result;
+    private String msg;
+    private Object obj;
+
+    private AjaxDTO() {
+    }
+
+    private AjaxDTO(int result, String msg, Object obj) {
+        this.result = result;
+        this.msg = msg;
+        this.obj = obj;
+    }
+
     public static AjaxDTO failure(String msg) {
         return new AjaxDTO(FAILURE, msg, null);
     }
@@ -29,20 +42,6 @@ public class AjaxDTO implements Serializable{
 
     public static AjaxDTO get(boolean success) {
         return new AjaxDTO(success ? SUCCESS : FAILURE, "", null);
-    }
-
-
-    private int result;
-    private String msg;
-    private Object obj;
-
-    private AjaxDTO() {
-    }
-
-    private AjaxDTO(int result, String msg, Object obj) {
-        this.result = result;
-        this.msg = msg;
-        this.obj = obj;
     }
 
     public AjaxDTO obj(Object obj) {
