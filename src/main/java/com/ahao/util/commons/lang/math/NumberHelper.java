@@ -70,7 +70,7 @@ public class NumberHelper {
 
     public static boolean equals(Number a, Number b) {
         if(a == b) {
-            return true;
+            return true; // 不能用 equals 比较, 比如 Short(1) not equals Integer(1)
         }
         if(a == null || b == null) {
             return false;
