@@ -1,0 +1,15 @@
+# 使用语言
+language: java
+jdk:
+  #  - oraclejdk8
+  #  - oraclejdk7
+  - openjdk8
+# 设置只监听哪个分支
+branches:
+  only:
+    - source
+cache:
+  directories:
+    - "$HOME/.m2"
+script:
+  - mvn clean verify
