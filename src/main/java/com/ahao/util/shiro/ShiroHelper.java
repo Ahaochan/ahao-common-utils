@@ -1,4 +1,4 @@
-package com.ahao.util.spring.shiro;
+package com.ahao.util.shiro;
 
 import com.ahao.util.commons.lang.ReflectHelper;
 import org.apache.shiro.SecurityUtils;
