@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Date;
 
-import static com.ahao.util.commons.io.ExcelHelper.*;
-
 
 class ExcelHelperTest {
 
@@ -66,36 +64,36 @@ class ExcelHelperTest {
 
                 Cell cell0 = row.getCell(0);
                 Assertions.assertAll("读取第0行第0列失败",
-                    () -> Assertions.assertEquals(Integer.valueOf("100"), getInteger(cell0)),
-                    () -> Assertions.assertEquals(String.valueOf("100"), getString(cell0)),
-                    () -> Assertions.assertEquals(Double.valueOf("100"), getDouble(cell0)),
-                    () -> Assertions.assertNull(getDate(cell0, "yyyy-MM-dd"))
+                    () -> Assertions.assertEquals(Integer.valueOf("100"), ExcelHelper.getInteger(cell0)),
+                    () -> Assertions.assertEquals(String.valueOf("100"), ExcelHelper.getString(cell0)),
+                    () -> Assertions.assertEquals(Double.valueOf("100"), ExcelHelper.getDouble(cell0)),
+                    () -> Assertions.assertNull(ExcelHelper.getDate(cell0, "yyyy-MM-dd"))
                 );
 
                 Cell cell1 = row.getCell(1);
                 Assertions.assertAll("读取第0行第1列失败",
-                    () -> Assertions.assertEquals(Integer.valueOf("100"), getInteger(cell1)),
-                    () -> Assertions.assertEquals(String.valueOf("100.00"), getString(cell1)),
-                    () -> Assertions.assertEquals(Double.valueOf("100.00"), getDouble(cell1)),
-                    () -> Assertions.assertNull(getDate(cell1, "yyyy-MM-dd"))
+                    () -> Assertions.assertEquals(Integer.valueOf("100"), ExcelHelper.getInteger(cell1)),
+                    () -> Assertions.assertEquals(String.valueOf("100.00"), ExcelHelper.getString(cell1)),
+                    () -> Assertions.assertEquals(Double.valueOf("100.00"), ExcelHelper.getDouble(cell1)),
+                    () -> Assertions.assertNull(ExcelHelper.getDate(cell1, "yyyy-MM-dd"))
                 );
 
 
                 Cell cell2 = row.getCell(2);
                 Assertions.assertAll("读取第0行第2列失败",
-                    () -> Assertions.assertNull(getInteger(cell2)),
-                    () -> Assertions.assertEquals("测试数据",  getString(cell2)),
-                    () -> Assertions.assertNull(getDouble(cell2)),
-                    () -> Assertions.assertNull(getDate(cell2, "yyyy-MM-dd"))
+                    () -> Assertions.assertNull(ExcelHelper.getInteger(cell2)),
+                    () -> Assertions.assertEquals("测试数据",  ExcelHelper.getString(cell2)),
+                    () -> Assertions.assertNull(ExcelHelper.getDouble(cell2)),
+                    () -> Assertions.assertNull(ExcelHelper.getDate(cell2, "yyyy-MM-dd"))
                 );
 
                 Cell cell3 = row.getCell(3);
                 Date expect = DateUtils.parseDate("2019-01-01", "yyyy-MM-dd");
                 Assertions.assertAll("读取第0行第3列失败",
-                    () -> Assertions.assertEquals(Integer.valueOf((int) expect.getTime()), getInteger(cell3)),
-                    () -> Assertions.assertEquals(String.valueOf(expect.getTime()),  getString(cell3)),
-                    () -> Assertions.assertEquals(Double.valueOf((double) expect.getTime()),  getDouble(cell3)),
-                    () -> Assertions.assertEquals(expect, getDate(cell3, "yyyy-MM-dd"))
+                    () -> Assertions.assertEquals(Integer.valueOf((int) expect.getTime()), ExcelHelper.getInteger(cell3)),
+                    () -> Assertions.assertEquals(String.valueOf(expect.getTime()),  ExcelHelper.getString(cell3)),
+                    () -> Assertions.assertEquals(Double.valueOf((double) expect.getTime()),  ExcelHelper.getDouble(cell3)),
+                    () -> Assertions.assertEquals(expect, ExcelHelper.getDate(cell3, "yyyy-MM-dd"))
                 );
             }
         }
