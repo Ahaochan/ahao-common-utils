@@ -49,7 +49,7 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
 
     private static void assertApplicationContext() {
         if (SpringContextHolder.applicationContext == null) {
-            throw new RuntimeException("applicationContext属性为null,请检查是否注入了SpringContextHolder!");
+            throw new IllegalStateException("applicationContext属性为null,请检查是否注入了SpringContextHolder!");
         }
     }
 }
