@@ -18,7 +18,7 @@ import java.util.Date;
 public class BaseDO {
     private Long id;
     private Date createTime;
-    private Date modifyTime;
+    private Date updateTime;
 
     public BaseDO() {
     }
@@ -30,7 +30,7 @@ public class BaseDO {
     public BaseDO(Long id, Date createTime, Date modifyTime) {
         this.id = id;
         this.createTime = CloneHelper.clone(createTime);
-        this.modifyTime = CloneHelper.clone(modifyTime);
+        this.updateTime = CloneHelper.clone(modifyTime);
     }
 
     public Long getId() {
@@ -49,12 +49,12 @@ public class BaseDO {
         this.createTime = CloneHelper.clone(createTime);
     }
 
-    public Date getModifyTime() {
-        return CloneHelper.clone(modifyTime);
+    public Date getUpdateTime() {
+        return CloneHelper.clone(updateTime);
     }
 
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = CloneHelper.clone(modifyTime);
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = CloneHelper.clone(updateTime);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class BaseDO {
         return "BaseDO{" +
                 "id=" + id +
                 ", createTime=" + createTime +
-                ", modifyTime=" + modifyTime +
+                ", updateTime=" + updateTime +
                 '}';
     }
 }
