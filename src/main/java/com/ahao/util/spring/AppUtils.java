@@ -13,4 +13,14 @@ public class AppUtils {
         String[] activeProfiles = getEnv().getActiveProfiles();
         return ArrayUtils.contains(activeProfiles, "dev");
     }
+
+    public static boolean isProd() {
+        String[] activeProfiles = getEnv().getActiveProfiles();
+        return ArrayUtils.contains(activeProfiles, "prod");
+    }
+
+    public static boolean isTest() {
+        String[] activeProfiles = getEnv().getActiveProfiles();
+        return ArrayUtils.contains(activeProfiles, "test");
+    }
 }
