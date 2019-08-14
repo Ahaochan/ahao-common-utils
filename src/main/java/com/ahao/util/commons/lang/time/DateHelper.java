@@ -28,11 +28,19 @@ public class DateHelper {
      * @param format 格式
      * @return 格式化后的日期
      */
-    public static String getString(long date, String format) {
+    public static String getString(Long date, String format) {
+        if(date == null) return null;
         return getString(new Date(date), format);
+    }
+    public static String getString(Long date) {
+        if(date == null) return null;
+        return getString(new Date(date), yyyyMMdd_hhmmssSSS);
     }
     public static String getString(Date date, String format) {
         return DateFormatUtils.format(date, format);
+    }
+    public static String getString(Date date) {
+        return DateFormatUtils.format(date, yyyyMMdd_hhmmssSSS);
     }
     public static String getString(String date, String fromFormat, String toFormat) {
         try {
