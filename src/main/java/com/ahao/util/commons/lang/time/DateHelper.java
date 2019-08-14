@@ -146,4 +146,23 @@ public class DateHelper {
         cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
         return cal.getTime();
     }
+
+    /**
+     * 给 指定日期, 添加指定时间
+     * @param date     要操作的日期
+     * @param offset   位移值, 支持负数
+     * @param timeUnit 时间单位
+     */
+    public static Date addTime(final Date date, long offset, TimeUnit timeUnit) {
+        if (date == null || offset == 0) {
+            return date;
+        }
+        if (timeUnit == null) {
+            throw new IllegalArgumentException("时间单位不能为空");
+        }
+
+        long oldTime = date.getTime();
+        long newTime = oldTime + TimeUnit.MILLISECONDS.convert(offset, timeUnit);
+        return new Date(newTime);
+    }
 }
