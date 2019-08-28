@@ -8,7 +8,6 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 public class RabbitMQHelper {
@@ -59,30 +58,12 @@ public class RabbitMQHelper {
     }
     // ======================================== 依赖 ==================================================
 
-    public static void send(String queueName, Serializable data) {
-        doSend(queueName, data);
-    }
-    public static void send(String queueName, String data) {
-        doSend(queueName, data);
-    }
-    public static void send(String queueName, byte[] data) {
-        doSend(queueName, data);
-    }
-    private static void doSend(String queueName, Object data) {
+    public static void send(String queueName, Object data) {
         CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
         getRabbitTemplate().convertAndSend(queueName, data, correlationId);
     }
 
-    public static void sendDelay(String queueName, Serializable data, long delayMilliSeconds) throws IllegalArgumentException {
-        doSendDelay(queueName, data, delayMilliSeconds);
-    }
-    public static void sendDelay(String queueName, String data, long delayMilliSeconds) throws IllegalArgumentException {
-        doSendDelay(queueName, data, delayMilliSeconds);
-    }
-    public static void sendDelay(String queueName, byte[] data, long delayMilliSeconds) throws IllegalArgumentException {
-        doSendDelay(queueName, data, delayMilliSeconds);
-    }
-    private static void doSendDelay(String queueName, Object data, long delayMilliSeconds) throws IllegalArgumentException {
+    public static void sendDelay(String queueName, Object data, long delayMilliSeconds) throws IllegalArgumentException {
         if(delayMilliSeconds > 0xffffffffL) {
             throw new IllegalArgumentException("超时过长, 只支持 < 4294967296 的延时值");
         }

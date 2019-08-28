@@ -24,12 +24,24 @@ public class AjaxDTO implements Serializable{
         this.obj = obj;
     }
 
+    public static AjaxDTO failure() {
+        return new AjaxDTO(FAILURE, "failure", null);
+    }
+
     public static AjaxDTO failure(String msg) {
         return new AjaxDTO(FAILURE, msg, null);
     }
 
     public static AjaxDTO failure(Object obj) {
-        return new AjaxDTO(FAILURE, "", obj);
+        return new AjaxDTO(FAILURE, "failure", obj);
+    }
+
+    public static AjaxDTO failure(String message, Object data) {
+        return new AjaxDTO(FAILURE, message, data);
+    }
+
+    public static AjaxDTO success() {
+        return new AjaxDTO(SUCCESS, "success", null);
     }
 
     public static AjaxDTO success(String msg) {
@@ -37,37 +49,46 @@ public class AjaxDTO implements Serializable{
     }
 
     public static AjaxDTO success(Object obj) {
-        return new AjaxDTO(SUCCESS, "", obj);
+        return new AjaxDTO(SUCCESS, "success", obj);
+    }
+
+    public static AjaxDTO success(String message, Object data) {
+        return new AjaxDTO(SUCCESS, message, data);
     }
 
     public static AjaxDTO get(boolean success) {
-        return new AjaxDTO(success ? SUCCESS : FAILURE, "", null);
+        return new AjaxDTO(success ? SUCCESS : FAILURE, success ? "success" : "error", null);
     }
 
-    public AjaxDTO obj(Object obj) {
-        this.obj = obj;
-        return this;
+    public static AjaxDTO get(int result, String message) {
+        return new AjaxDTO(result, message, null);
     }
 
-    public AjaxDTO result(int result) {
-        this.result = result;
-        return this;
-    }
-
-    public AjaxDTO msg(String msg) {
-        this.msg = msg;
-        return this;
+    public static AjaxDTO get(int result, String message, Object data) {
+        return new AjaxDTO(result, message, data);
     }
 
     public int getResult() {
         return result;
     }
 
+    public void setResult(int result) {
+        this.result = result;
+    }
+
     public String getMsg() {
         return msg;
     }
 
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
     public Object getObj() {
         return obj;
+    }
+
+    public void setObj(Object obj) {
+        this.obj = obj;
     }
 }
