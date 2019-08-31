@@ -53,6 +53,9 @@ public class RedisHelper {
     public static Long dels(String... keys) {
         return getRedisTemplate().delete(Arrays.asList(keys));
     }
+    public static Boolean expire(String key, long timeout, TimeUnit unit) {
+        return getStringRedisTemplate().expire(key, timeout, unit);
+    }
 
     public static Long dbSize() {
         return getStringRedisTemplate().execute(RedisServerCommands::dbSize);
@@ -180,6 +183,14 @@ public class RedisHelper {
     public static Long incr(String key, long value) {
         return getStringRedisTemplate().opsForValue().increment(key, value);
     }
+    public static Long incrEx(String key, long expire, TimeUnit timeUnit) {
+        String script = "local v = redis.call('INCR', ARGV[1]) if v == 1 then redis.call('EXPIRE', ARGV[1], ARGV[2]) end return v";
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(script, Long.class);
+        String expireTime = String.valueOf(TimeUnit.SECONDS.convert(expire, timeUnit));
+        Long incr = getStringRedisTemplate().execute(redisScript, Collections.singletonList(key), key, expireTime);
+        return incr;
+    }
+
     public static Long decr(String key) {
         return getStringRedisTemplate().opsForValue().decrement(key);
     }
