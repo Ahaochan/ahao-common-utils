@@ -98,7 +98,7 @@ public class ExcelHelper {
                     Row excelRow = sheet.createRow(r);
                     for(int c = 0, colLen = row.length; c < colLen; c++){
                         Cell cell = excelRow.createCell(c, CellType.STRING);
-                        cell.setCellValue(row[c].toString());
+                        cell.setCellValue(StringHelper.null2Empty(row[c]));
                     }
                 }
             }
