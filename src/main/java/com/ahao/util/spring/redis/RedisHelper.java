@@ -184,10 +184,11 @@ public class RedisHelper {
         return getStringRedisTemplate().opsForValue().increment(key, value);
     }
     public static Long incrEx(String key, long expire, TimeUnit timeUnit) {
-        String script = "local v = redis.call('INCR', ARGV[1]) if v == 1 then redis.call('EXPIRE', ARGV[1], ARGV[2]) end return v";
+        String script = "local v = redis.call('INCR', KEYS[1]) if v == 1 then redis.call('EXPIRE', KEYS[1], ARGV[1]) end return v";
         DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(script, Long.class);
+
         String expireTime = String.valueOf(TimeUnit.SECONDS.convert(expire, timeUnit));
-        Long incr = getStringRedisTemplate().execute(redisScript, Collections.singletonList(key), key, expireTime);
+        Long incr = getStringRedisTemplate().execute(redisScript, Collections.singletonList(key), expireTime);
         return incr;
     }
 
