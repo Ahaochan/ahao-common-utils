@@ -8,6 +8,17 @@ import java.util.concurrent.TimeUnit;
 
 public class DateHelperTest {
     @Test
+    public void now() {
+        String date = DateHelper.getNow("yyyy-MM-dd");
+        int year = DateHelper.getNowYear();
+        int month = DateHelper.getNowMonth();
+        int day = DateHelper.getNowDay();
+        Assertions.assertEquals(date,  year + "-" + (month < 10 ? "0" + month : month) + "-" + day);
+
+
+    }
+
+    @Test
     public void addTime() {
         Date now = new Date();
 

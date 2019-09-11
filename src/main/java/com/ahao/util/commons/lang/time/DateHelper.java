@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -57,10 +60,10 @@ public class DateHelper {
      * @return 当前时间
      */
     public static String getNow(String format) {
-        return  DateFormatUtils.format(new Date(), format);
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(format));
     }
     public static int getNowYear() {
-        return Calendar.getInstance().get(Calendar.YEAR);
+        return LocalDate.now().getYear();
     }
     public static Date getNowYearStart(){
         return getYearStart(getNowYear());
@@ -69,10 +72,10 @@ public class DateHelper {
         return getYearEnd(getNowYear());
     }
     public static int getNowMonth() {
-        return Calendar.getInstance().get(Calendar.MONTH) + 1;
+        return LocalDate.now().getMonthValue();
     }
     public static int getNowDay() {
-        return Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        return LocalDate.now().getDayOfMonth();
     }
 
     /**
