@@ -1,6 +1,6 @@
 package com.ahao.util.shiro;
 
-import com.ahao.util.commons.lang.ReflectHelper;
+import com.ahao.util.commons.lang.reflect.ReflectHelper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
