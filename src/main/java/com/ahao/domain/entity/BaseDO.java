@@ -1,10 +1,7 @@
 package com.ahao.domain.entity;
 
-import com.ahao.util.commons.CloneHelper;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created by Ahaochan on 2017/6/5.
@@ -12,11 +9,13 @@ import java.util.Date;
  * 返回插入id的Mybatis用法:
  * int saveUser(@Param("baseDO") BaseDO baseDO, @Param("name") String name);
  * <insert id="saveUser" useGeneratedKeys="true" keyProperty="baseDO.id" keyColumn="id">
- *     insert into user (name) values (#{name});
+ * insert into user (name) values (#{name});
  * </insert>
  */
 public class BaseDO {
     private Long id;
+    private Long createBy;
+    private Long updateBy;
     private Date createTime;
     private Date updateTime;
 
@@ -27,12 +26,6 @@ public class BaseDO {
         this.id = id;
     }
 
-    public BaseDO(Long id, Date createTime, Date modifyTime) {
-        this.id = id;
-        this.createTime = CloneHelper.clone(createTime);
-        this.updateTime = CloneHelper.clone(modifyTime);
-    }
-
     public Long getId() {
         return id;
     }
@@ -41,48 +34,63 @@ public class BaseDO {
         this.id = id;
     }
 
+    public Long getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(Long createBy) {
+        this.createBy = createBy;
+    }
+
+    public Long getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(Long updateBy) {
+        this.updateBy = updateBy;
+    }
+
     public Date getCreateTime() {
-        return CloneHelper.clone(createTime);
+        return createTime;
     }
 
     public void setCreateTime(Date createTime) {
-        this.createTime = CloneHelper.clone(createTime);
+        this.createTime = createTime;
     }
 
     public Date getUpdateTime() {
-        return CloneHelper.clone(updateTime);
+        return updateTime;
     }
 
     public void setUpdateTime(Date updateTime) {
-        this.updateTime = CloneHelper.clone(updateTime);
+        this.updateTime = updateTime;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         BaseDO baseDO = (BaseDO) o;
-
-        return new EqualsBuilder()
-                .append(id, baseDO.id)
-                .isEquals();
+        return Objects.equals(id, baseDO.id) &&
+            Objects.equals(createBy, baseDO.createBy) &&
+            Objects.equals(updateBy, baseDO.updateBy) &&
+            Objects.equals(createTime, baseDO.createTime) &&
+            Objects.equals(updateTime, baseDO.updateTime);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(id)
-                .toHashCode();
+        return Objects.hash(id, createBy, updateBy, createTime, updateTime);
     }
 
     @Override
     public String toString() {
         return "BaseDO{" +
-                "id=" + id +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                '}';
+            "id=" + id +
+            ", createBy=" + createBy +
+            ", updateBy=" + updateBy +
+            ", createTime=" + createTime +
+            ", updateTime=" + updateTime +
+            '}';
     }
 }
