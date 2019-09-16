@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -24,7 +25,7 @@ public class RequestMappingLogAOP {
     public Object aroundAdvice(ProceedingJoinPoint pjp) throws Throwable {
         // 1. 根据切面参数, 获取 Redis 的 Key
         Object[] args = Arrays.stream(pjp.getArgs())
-            .filter(a -> !ClassHelper.isSubClass(a, ServletRequest.class, ServletResponse.class, MultipartFile.class))
+            .filter(a -> !ClassHelper.isSubClass(a, HttpSession.class, ServletRequest.class, ServletResponse.class, MultipartFile.class))
             .toArray(Object[]::new);
         MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
         Method method = methodSignature.getMethod();
