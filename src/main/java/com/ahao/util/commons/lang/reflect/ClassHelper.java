@@ -1,6 +1,25 @@
 package com.ahao.util.commons.lang.reflect;
 
+import com.ahao.util.commons.lang.ObjectHelper;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ClassHelper {
+    private static final String CGLIB_CLASS_SEPARATOR = "$$";
+
+    public static List<Class<?>> getAllInterfaces(Class<?> cls) {
+        return ClassUtils.getAllInterfaces(cls);
+    }
+    public static List<Class<?>> getInterfaces(Class<?> cls, Class... interfaces) {
+        return ClassUtils.getAllInterfaces(cls).stream()
+            .filter(e -> ArrayUtils.contains(interfaces, e))
+            .collect(Collectors.toList());
+    }
+
     /**
      * 判断 obj 所属类是否属于 superclasses 的子类或接口
      * @param obj 要判断的类
@@ -16,5 +35,19 @@ public class ClassHelper {
             }
         }
         return false;
+    }
+
+    public static Class<?> unwrapCglib(Object instance) {
+        if(instance == null) {
+            return null;
+        }
+        Class<?> clazz = instance.getClass();
+        if (clazz != null && StringUtils.contains(clazz.getName(), CGLIB_CLASS_SEPARATOR)) {
+            Class<?> superClass = clazz.getSuperclass();
+            if (superClass != null && ObjectHelper.notEquals(clazz, superClass)) {
+                return superClass;
+            }
+        }
+        return clazz;
     }
 }
