@@ -105,6 +105,30 @@ public class StringHelper {
         return obj == null ? "" : String.valueOf(obj);
     }
 
+    /**
+     * 替换下标在 [start, end) 的字符串为 ch
+     * @param string 需要替换的字符串
+     * @param start  起始下标
+     * @param end    终止下标, 负数则为倒数
+     * @param ch     替换为目标字符
+     */
+    public static String replace(String string, int start, int end, char ch) {
+        if (StringUtils.isEmpty(string)) {
+            return string;
+        }
+        if (end < 0) {
+            end = string.length() + end;
+        }
+        if (start < 0 || start > end) {
+            throw new IllegalArgumentException("start(" + start + ") must greater than 0 and less than end(" + end + ")");
+        }
+        StringBuilder sb = new StringBuilder(string);
+        for (int i = start; i < end; i++) {
+            sb.setCharAt(i, ch);
+        }
+        return sb.toString();
+    }
+
     // ====================================== 汉字处理相关 ==================================================
     public static boolean containChinese(CharSequence charSequence) {
         for (int i = 0, len = charSequence.length(); i < len; i++) {

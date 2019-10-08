@@ -43,6 +43,18 @@ class StringHelperTest {
         Assertions.assertTrue(urlMatch("com/**/*.jsp", "com/abc.jsp"));
     }
 
+    @Test
+    public void replace() {
+        Assertions.assertNull(StringHelper.replace(null, 3, 10, '*'));
+        Assertions.assertEquals("", StringHelper.replace("", 3, 10, '*'));
+        Assertions.assertEquals("123******456", StringHelper.replace("123abcdef456", 3, 9, '*'));
+        Assertions.assertEquals("123******456", StringHelper.replace("123abcdef456", 3, -3, '*'));
+        Assertions.assertEquals("你好**世界", StringHelper.replace("你好我的世界", 2, -2, '*'));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            StringHelper.replace("123abcdef456", 3, -10, '*');
+        });
+    }
+
 
     // ====================================== 汉字处理相关 ==================================================
     @Test
