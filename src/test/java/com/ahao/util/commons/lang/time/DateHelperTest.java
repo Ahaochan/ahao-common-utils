@@ -13,7 +13,7 @@ public class DateHelperTest {
         int year = DateHelper.getNowYear();
         int month = DateHelper.getNowMonth();
         int day = DateHelper.getNowDay();
-        Assertions.assertEquals(date,  year + "-" + (month < 10 ? "0" + month : month) + "-" + day);
+        Assertions.assertEquals(date,  year + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day));
 
 
     }
