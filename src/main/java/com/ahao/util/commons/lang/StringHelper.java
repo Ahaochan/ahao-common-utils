@@ -119,9 +119,11 @@ public class StringHelper {
         if (end < 0) {
             end = string.length() + end;
         }
-        if (start < 0 || start > end) {
-            throw new IllegalArgumentException("start(" + start + ") must greater than 0 and less than end(" + end + ")");
+        if (start > end) {
+            throw new IllegalArgumentException("start(" + start + ") must less than end(" + end + ")");
         }
+        start = Math.max(0, start);
+        end = Math.min(end, string.length());
         StringBuilder sb = new StringBuilder(string);
         for (int i = start; i < end; i++) {
             sb.setCharAt(i, ch);
