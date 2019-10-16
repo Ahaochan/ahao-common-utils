@@ -1,6 +1,7 @@
 package com.ahao.domain.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Created by Ahaochan on 2017/7/18.
@@ -90,5 +91,29 @@ public class AjaxDTO implements Serializable{
 
     public void setObj(Object obj) {
         this.obj = obj;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AjaxDTO dto = (AjaxDTO) o;
+        return result == dto.result &&
+            Objects.equals(msg, dto.msg) &&
+            Objects.equals(obj, dto.obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(result, msg, obj);
+    }
+
+    @Override
+    public String toString() {
+        return "AjaxDTO{" +
+            "result=" + result +
+            ", msg='" + msg + '\'' +
+            ", obj=" + obj +
+            '}';
     }
 }
