@@ -1,7 +1,6 @@
 package com.ahao.util.commons.lang;
 
 import com.ahao.util.commons.lang.reflect.ReflectHelper;
-import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -114,17 +113,5 @@ public class BeanHelper {
             logger.warn("{}反序列化XML失败", xml, e);
         }
         return null;
-    }
-
-    public static String obj2JsonString(Object obj) {
-        return JSON.toJSONString(obj);
-    }
-
-    public static byte[] obj2JsonBytes(Object obj) {
-        return JSON.toJSONBytes(obj);
-    }
-
-    public static <T> T json2Obj(String json, Class<T> clazz) {
-        return JSON.parseObject(json, clazz);
     }
 }

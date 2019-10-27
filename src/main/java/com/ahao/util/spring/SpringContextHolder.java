@@ -2,6 +2,7 @@ package com.ahao.util.spring;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Lazy;
@@ -37,6 +38,13 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
         return applicationContext.getBean(requiredType);
     }
 
+    public static <T> T getBean(Class<T> requiredType, T defaultValue) {
+        assertApplicationContext();
+        ObjectProvider<T> beanProvider = applicationContext.getBeanProvider(requiredType);
+        T bean = beanProvider.getIfAvailable(() -> defaultValue);
+        return bean;
+    }
+
     public static String getValue(String key) {
         assertApplicationContext();
         return applicationContext.getEnvironment().getProperty(key);
@@ -52,6 +60,9 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
         SpringContextHolder.clearHolder();
     }
 
+    public static boolean enable() {
+        return SpringContextHolder.applicationContext != null;
+    }
     private static void assertApplicationContext() {
         if (SpringContextHolder.applicationContext == null) {
             throw new IllegalStateException("applicationContext属性为null,请检查是否注入了SpringContextHolder!");

@@ -1,6 +1,6 @@
 package com.ahao.aop;
 
-import com.ahao.util.commons.lang.BeanHelper;
+import com.ahao.util.commons.io.JSONHelper;
 import com.ahao.util.commons.lang.reflect.ClassHelper;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -33,11 +33,11 @@ public class RequestMappingLogAOP {
         String methodName = method.getName();
 
         // 2. 统计耗时
-        logger.info("{}.{}方法开始: 请求参数:{} ", className, methodName, BeanHelper.obj2JsonString(args));
+        logger.info("{}.{}方法开始: 请求参数:{} ", className, methodName, JSONHelper.toString(args));
         long start = System.currentTimeMillis();
         Object result = pjp.proceed();
         long end = System.currentTimeMillis();
-        logger.info("{}.{}方法结束: 返回值:{}, 耗时:{}ms", className, methodName, BeanHelper.obj2JsonString(result), end - start);
+        logger.info("{}.{}方法结束: 返回值:{}, 耗时:{}ms", className, methodName, JSONHelper.toString(result), end - start);
         return result;
     }
 }
