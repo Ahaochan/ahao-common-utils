@@ -50,6 +50,11 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
         return applicationContext.getEnvironment().getProperty(key);
     }
 
+    public static boolean getBoolean(String key) {
+        String value = getValue(key);
+        return Boolean.valueOf(value);
+    }
+
     public static void clearHolder() {
         applicationContext = null;
     }
