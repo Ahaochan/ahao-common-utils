@@ -37,11 +37,7 @@ public class ClassHelper {
         return false;
     }
 
-    public static Class<?> unwrapCglib(Object instance) {
-        if(instance == null) {
-            return null;
-        }
-        Class<?> clazz = instance.getClass();
+    public static Class<?> unwrapCglib(Class<?> clazz) {
         if (clazz != null && StringUtils.contains(clazz.getName(), CGLIB_CLASS_SEPARATOR)) {
             Class<?> superClass = clazz.getSuperclass();
             if (superClass != null && ObjectHelper.notEquals(clazz, superClass)) {
