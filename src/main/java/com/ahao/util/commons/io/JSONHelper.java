@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +93,7 @@ public class JSONHelper {
             String[] searchNodes = StringUtils.split(key, '.');
 
             for (String searchNode : searchNodes) {
-                if (StringUtils.isNumeric(searchNode)) {
+                if (node instanceof ArrayNode) {
                     node = node.get(Integer.parseInt(searchNode));
                 } else {
                     node = node.get(searchNode);
@@ -104,7 +105,7 @@ public class JSONHelper {
             String value = node.asText();
             return value;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(json + " 读取 " + key + " 错误.", e);
         }
         return "";
     }
