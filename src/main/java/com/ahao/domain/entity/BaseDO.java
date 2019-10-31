@@ -1,5 +1,12 @@
 package com.ahao.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.util.Date;
 import java.util.Objects;
 
@@ -12,7 +19,11 @@ import java.util.Objects;
  * insert into user (name) values (#{name});
  * </insert>
  */
+@MappedSuperclass
 public class BaseDO {
+    @TableId(type = IdType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long createBy;
     private Long updateBy;

@@ -17,6 +17,8 @@
 
     <properties>
         <shiro.version>1.4.1</shiro.version>
+
+        <mybatis.plus.version>3.1.1</mybatis.plus.version>
     </properties>
 
     <dependencies>
@@ -106,6 +108,21 @@
             <version>${shiro.version}</version>
         </dependency>
         <!--======================================================= Shiro =======================================================-->
+
+        <!--======================================================= 数据库相关 =======================================================-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus</artifactId>
+            <version>${mybatis.plus.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!--======================================================= 数据库相关 =======================================================-->
+
 
         <!--======================================================= 单元测试 =======================================================-->
         <dependency>
