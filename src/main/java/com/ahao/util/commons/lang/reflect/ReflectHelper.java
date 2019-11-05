@@ -306,9 +306,7 @@ public class ReflectHelper {
                         .map(p -> StringUtils.replace(p, "\\", "."))
                         .map(p -> StringUtils.removeStart(p, "."))
                         .map(p -> StringUtils.removeEnd(p, ".class"))
-                        .map(p -> { try { return Class.forName(p); }
-                        catch (ClassNotFoundException e) { e.printStackTrace(); return null; }
-                        })
+                        .map(ClassHelper::forName)
                         .collect(Collectors.toList());
                 result.addAll(list);
             }

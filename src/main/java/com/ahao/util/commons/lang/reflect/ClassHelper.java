@@ -4,11 +4,14 @@ import com.ahao.util.commons.lang.ObjectHelper;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClassHelper {
+    private static final Logger logger = LoggerFactory.getLogger(ClassHelper.class);
     private static final String CGLIB_CLASS_SEPARATOR = "$$";
 
     public static List<Class<?>> getAllInterfaces(Class<?> cls) {
@@ -45,5 +48,14 @@ public class ClassHelper {
             }
         }
         return clazz;
+    }
+
+    public static Class<?> forName(String className) {
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            logger.error("未找到" + className + "类", e);
+        }
+        return null;
     }
 }
