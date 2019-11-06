@@ -3,10 +3,6 @@ package com.ahao.domain.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
 import java.util.Date;
 import java.util.Objects;
 
@@ -19,21 +15,18 @@ import java.util.Objects;
  * insert into user (name) values (#{name});
  * </insert>
  */
-@MappedSuperclass
-public class BaseDO {
+public class MybatisPlusBaseDO {
     @TableId(type = IdType.AUTO)
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long createBy;
     private Long updateBy;
     private Date createTime;
     private Date updateTime;
 
-    public BaseDO() {
+    public MybatisPlusBaseDO() {
     }
 
-    public BaseDO(Long id) {
+    public MybatisPlusBaseDO(Long id) {
         this.id = id;
     }
 
@@ -81,7 +74,7 @@ public class BaseDO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BaseDO baseDO = (BaseDO) o;
+        MybatisPlusBaseDO baseDO = (MybatisPlusBaseDO) o;
         return Objects.equals(id, baseDO.id) &&
             Objects.equals(createBy, baseDO.createBy) &&
             Objects.equals(updateBy, baseDO.updateBy) &&

@@ -1,7 +1,7 @@
 package com.ahao.util.commons.io;
 
 import com.ahao.domain.entity.AjaxDTO;
-import com.ahao.domain.entity.BaseDO;
+import com.ahao.domain.entity.MybatisPlusBaseDO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -34,9 +34,9 @@ public class JSONHelperTest {
 
     @Test
     public void parseList() {
-        List<BaseDO> list1 = new ArrayList<>();
+        List<MybatisPlusBaseDO> list1 = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            BaseDO entity = new BaseDO();
+            MybatisPlusBaseDO entity = new MybatisPlusBaseDO();
             entity.setId((long) i);
             entity.setCreateTime(new Date());
             entity.setUpdateTime(new Date());
@@ -48,7 +48,7 @@ public class JSONHelperTest {
         Assertions.assertNotNull(json);
         Assertions.assertNotEquals("", json);
 
-        List<BaseDO> list2 = JSONHelper.parseList(json, BaseDO.class);
+        List<MybatisPlusBaseDO> list2 = JSONHelper.parseList(json, MybatisPlusBaseDO.class);
         Assertions.assertNotNull(list2);
         Assertions.assertFalse(list2.isEmpty());
         Assertions.assertEquals(list1, list2);
@@ -56,9 +56,9 @@ public class JSONHelperTest {
 
     @Test
     public void parseMap() {
-        HashMap<Integer, BaseDO> map1 = new HashMap<>();
+        HashMap<Integer, MybatisPlusBaseDO> map1 = new HashMap<>();
         for (int i = 0; i < 10; i++) {
-            BaseDO entity = new BaseDO();
+            MybatisPlusBaseDO entity = new MybatisPlusBaseDO();
             entity.setId((long) i);
             entity.setCreateTime(new Date());
             entity.setUpdateTime(new Date());
@@ -70,7 +70,7 @@ public class JSONHelperTest {
         Assertions.assertNotNull(json);
         Assertions.assertNotEquals("", json);
 
-        Map<Integer, BaseDO> map2 = JSONHelper.parseMap(json, Integer.class, BaseDO.class);
+        Map<Integer, MybatisPlusBaseDO> map2 = JSONHelper.parseMap(json, Integer.class, MybatisPlusBaseDO.class);
         Assertions.assertNotNull(map2);
         Assertions.assertFalse(map2.isEmpty());
         Assertions.assertEquals(map1, map2);
