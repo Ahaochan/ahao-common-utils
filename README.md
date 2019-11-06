@@ -4,6 +4,9 @@
   <a href="https://www.codacy.com/app/Ahaochan/ahao-common-utils?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Ahaochan/ahao-common-utils&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/a04e09aa234b49b0b905b5d273688cac"/></a>
   <a href="https://bestpractices.coreinfrastructure.org/projects/3004"><img src="https://bestpractices.coreinfrastructure.org/projects/3004/badge"></a>
   <a href="https://codecov.io/gh/Ahaochan/ahao-common-utils"><img src="https://codecov.io/gh/Ahaochan/ahao-common-utils/branch/master/graph/badge.svg"/></a>
+  
+  <br/>
+  <a href="https://codescene.io/projects/5909/jobs/latest-successful/results"><img src="https://codescene.io/projects/5909/status.svg" /></a>
 </p>
 
 # 简介
