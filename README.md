@@ -3,6 +3,7 @@
   <a href="https://www.codefactor.io/repository/github/ahaochan/ahao-common-utils/overview/master"><img src="https://www.codefactor.io/repository/github/ahaochan/ahao-common-utils/badge/master" title="CodeFactor"></a>
   <a href="https://www.codacy.com/app/Ahaochan/ahao-common-utils?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Ahaochan/ahao-common-utils&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/a04e09aa234b49b0b905b5d273688cac"/></a>
   <a href="https://depshield.github.io"><img src="https://depshield.sonatype.org/badges/owner/repository/depshield.svg"/></a>
+  <a href="https://snyk.io/test/github/Ahaochan/ahao-common-utils?targetFile=pom.xml"><img src="https://snyk.io/test/github/Ahaochan/ahao-common-utils/badge.svg?targetFile=pom.xml" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/Ahaochan/ahao-common-utils?targetFile=pom.xml"></a>
  
   <br/>
   <a href="https://bestpractices.coreinfrastructure.org/projects/3004"><img src="https://bestpractices.coreinfrastructure.org/projects/3004/badge"></a>
