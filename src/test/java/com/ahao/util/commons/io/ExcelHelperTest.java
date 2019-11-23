@@ -4,6 +4,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.util.Date;
@@ -47,7 +48,7 @@ class ExcelHelperTest {
 
     @Test
     void getCellValueTest() throws Exception {
-        File file = new File("src/test/resources", "excel.xlsx");
+        File file = new ClassPathResource("excel/excel.xlsx").getFile();
         int sheetIndex = 0;
 
         try (Workbook workbook = WorkbookFactory.create(file)){

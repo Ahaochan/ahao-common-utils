@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: test1
+  application:
+    name: ahao-common-utils
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8

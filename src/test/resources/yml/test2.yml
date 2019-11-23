@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: test2
+  application:
+    name: ahao-common-utils
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss:SSS
+    locale: zh_CN
