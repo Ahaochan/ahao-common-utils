@@ -322,6 +322,7 @@ public class RedisHelper {
     }
     public static boolean lock(String key, String unionId, int expireSeconds) {
         Boolean success = getStringRedisTemplate().opsForValue().setIfAbsent(key, unionId, expireSeconds, TimeUnit.SECONDS);
+        logger.debug("获取 Redis 锁, key:{}, unionId:{}, expireSeconds:{}, 结果:{}", key, unionId, expireSeconds, success);
         return success != null && success;
     }
     public static boolean lockBlock(String key, String unionId) {
@@ -333,18 +334,21 @@ public class RedisHelper {
                 return true;
             }
             try {
+                logger.debug("获取 Redis 锁失败, 继续阻塞{}毫秒", blockTime);
                 blockTime -= 1000;
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 logger.error("线程中断", e);
             }
         }
+        logger.debug("获取 Redis 锁失败");
         return false;
     }
     public static boolean unlock(String key, String unionId){
         String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
         DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(script, Long.class);
         Long count = getStringRedisTemplate().execute(redisScript, Collections.singletonList(key), unionId);
+        logger.debug("解锁 Redis 锁, key:{}, unionId:{}, 结果:{}", key, unionId, count);
         return count != null && count > 0;
     }
     // ======================================== 分布式锁 ==================================================
