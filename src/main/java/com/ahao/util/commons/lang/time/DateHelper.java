@@ -177,16 +177,16 @@ public class DateHelper {
     }
 
     public static Date toDate(LocalDate localDate) {
-        ZoneId zoneId = ZoneId.systemDefault();
-        ZonedDateTime zonedDateTime = localDate.atStartOfDay(zoneId);
-        Instant instant = zonedDateTime.toInstant();
-        return Date.from(instant);
+        ZonedDateTime zonedDateTime = localDate.atStartOfDay(ZoneId.systemDefault());
+        return toDate(zonedDateTime);
     }
     public static Date toDate(LocalDateTime localDateTime) {
-        ZoneId zoneId = ZoneId.systemDefault();
-        ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+        return toDate(zonedDateTime);
+    }
+    public static Date toDate(ZonedDateTime zonedDateTime) {
         Instant instant = zonedDateTime.toInstant();
-        return Date.from(instant);
+        return toDate(instant);
     }
     public static Date toDate(Instant instant) {
         return Date.from(instant);
