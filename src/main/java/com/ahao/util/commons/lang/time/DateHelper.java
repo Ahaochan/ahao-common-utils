@@ -8,8 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -175,5 +174,21 @@ public class DateHelper {
         long oldTime = date.getTime();
         long newTime = oldTime + TimeUnit.MILLISECONDS.convert(offset, timeUnit);
         return new Date(newTime);
+    }
+
+    public static Date toDate(LocalDate localDate) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zonedDateTime = localDate.atStartOfDay(zoneId);
+        Instant instant = zonedDateTime.toInstant();
+        return Date.from(instant);
+    }
+    public static Date toDate(LocalDateTime localDateTime) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
+        Instant instant = zonedDateTime.toInstant();
+        return Date.from(instant);
+    }
+    public static Date toDate(Instant instant) {
+        return Date.from(instant);
     }
 }

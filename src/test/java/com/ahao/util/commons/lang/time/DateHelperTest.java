@@ -3,6 +3,11 @@ package com.ahao.util.commons.lang.time;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -27,5 +32,29 @@ public class DateHelperTest {
 
         Date twoDayBefore = DateHelper.addTime(now, -2, TimeUnit.DAYS);
         Assertions.assertEquals(DateHelper.DAY_TIME * -2, twoDayBefore.getTime() - now.getTime());
+    }
+
+    @Test
+    public void convert() throws Exception {
+        String now = "2019-10-24 10:24:10.240";
+        String format = "yyyy-MM-dd HH:mm:ss.SSS";
+
+        Date except1 = new SimpleDateFormat(format).parse(now);
+        LocalDateTime localDateTime = LocalDateTime.parse(now, DateTimeFormatter.ofPattern(format));
+        Date actual1 = DateHelper.toDate(localDateTime);
+        System.out.println(DateHelper.getString(actual1, format));
+        Assertions.assertEquals(except1.getTime(), actual1.getTime());
+
+        Date except2 = new SimpleDateFormat("yyyy-MM-dd").parse(now);
+        LocalDate localDate = LocalDate.parse(now, DateTimeFormatter.ofPattern(format));
+        Date actual2 = DateHelper.toDate(localDate);
+        System.out.println(DateHelper.getString(actual2, format));
+        Assertions.assertEquals(except2.getTime(), actual2.getTime());
+
+        Date except3 = new Date();
+        Instant instant = Instant.now();
+        Date actual3 = DateHelper.toDate(instant);
+        System.out.println(DateHelper.getString(actual3, format));
+        Assertions.assertTrue(Math.abs(except3.getTime() - actual3.getTime()) < 10);
     }
 }
