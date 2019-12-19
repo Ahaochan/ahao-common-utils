@@ -33,8 +33,8 @@ public class DNSTest {
         System.out.println(domain);
         System.out.println(ip);
 
-        HttpGet get1 = new HttpGet("http://" + domain);
-        HttpGet get2 = new HttpGet("http://" + ip);
+        HttpGet get1 = new HttpGet("http://" + domain + "/img/bd_logo1.png");
+        HttpGet get2 = new HttpGet("http://" + ip + "/img/bd_logo1.png");
         try (CloseableHttpClient client = HttpClients.createDefault();
              CloseableHttpResponse response1 = client.execute(get1);
              CloseableHttpResponse response2 = client.execute(get2)) {
