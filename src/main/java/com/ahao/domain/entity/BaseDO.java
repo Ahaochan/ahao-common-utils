@@ -1,8 +1,6 @@
 package com.ahao.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-
+import javax.persistence.MappedSuperclass;
 import java.util.Date;
 import java.util.Objects;
 
@@ -15,27 +13,14 @@ import java.util.Objects;
  * insert into user (name) values (#{name});
  * </insert>
  */
-public class MybatisPlusBaseDO {
-    @TableId(type = IdType.AUTO)
-    private Long id;
+@MappedSuperclass
+public class BaseDO {
     private Long createBy;
     private Long updateBy;
     private Date createTime;
     private Date updateTime;
 
-    public MybatisPlusBaseDO() {
-    }
-
-    public MybatisPlusBaseDO(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public BaseDO() {
     }
 
     public Long getCreateBy() {
@@ -74,9 +59,8 @@ public class MybatisPlusBaseDO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MybatisPlusBaseDO baseDO = (MybatisPlusBaseDO) o;
-        return Objects.equals(id, baseDO.id) &&
-            Objects.equals(createBy, baseDO.createBy) &&
+        BaseDO baseDO = (BaseDO) o;
+        return Objects.equals(createBy, baseDO.createBy) &&
             Objects.equals(updateBy, baseDO.updateBy) &&
             Objects.equals(createTime, baseDO.createTime) &&
             Objects.equals(updateTime, baseDO.updateTime);
@@ -84,14 +68,13 @@ public class MybatisPlusBaseDO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, createBy, updateBy, createTime, updateTime);
+        return Objects.hash(createBy, updateBy, createTime, updateTime);
     }
 
     @Override
     public String toString() {
         return "BaseDO{" +
-            "id=" + id +
-            ", createBy=" + createBy +
+            "createBy=" + createBy +
             ", updateBy=" + updateBy +
             ", createTime=" + createTime +
             ", updateTime=" + updateTime +
