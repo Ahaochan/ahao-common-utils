@@ -2,6 +2,7 @@ package com.ahao.util.commons.io;
 
 import com.ahao.domain.entity.AjaxDTO;
 import com.ahao.domain.entity.BaseDO;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +48,7 @@ public class JSONHelperTest {
         Assertions.assertNotNull(json);
         Assertions.assertNotEquals("", json);
 
-        List<BaseDO> list2 = JSONHelper.parseList(json, BaseDO.class);
+        List<BaseDO> list2 = JSONHelper.parse(json, new TypeReference<List<BaseDO>>() {});
         Assertions.assertNotNull(list2);
         Assertions.assertFalse(list2.isEmpty());
         Assertions.assertEquals(list1, list2);
@@ -68,7 +69,7 @@ public class JSONHelperTest {
         Assertions.assertNotNull(json);
         Assertions.assertNotEquals("", json);
 
-        Map<Integer, BaseDO> map2 = JSONHelper.parseMap(json, Integer.class, BaseDO.class);
+        Map<Integer, BaseDO> map2 = JSONHelper.parse(json, new TypeReference<Map<Integer, BaseDO>>() {});
         Assertions.assertNotNull(map2);
         Assertions.assertFalse(map2.isEmpty());
         Assertions.assertEquals(map1, map2);

@@ -3,7 +3,7 @@ package com.ahao.util.commons.io;
 
 import com.ahao.util.spring.SpringContextHolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -13,9 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.jackson.JacksonProperties;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 public class JSONHelper {
     private static final Logger logger = LoggerFactory.getLogger(JSONHelper.class);
@@ -62,26 +59,14 @@ public class JSONHelper {
         return null;
     }
 
-    public static <T> List<T> parseList(String json, Class<T> clazz) {
-        JavaType type = om.getTypeFactory().constructParametricType(List.class, clazz);
+    public static <T> T parse(String json, TypeReference<T> typeReference) {
         try {
-            List<T> list = om.readValue(json, type);
-            return list;
+            T obj = om.readValue(json, typeReference);
+            return obj;
         } catch (IOException e) {
-            logger.error(json + " 转为 List<" + clazz.getName() + ">错误.", e);
+            logger.error(json + " 转为 " + typeReference.getType() + " 错误.", e);
         }
-        return Collections.emptyList();
-    }
-
-    public static <K, V> Map<K, V> parseMap(String json, Class<K> keyClass, Class<V> valueClass) {
-        JavaType type = om.getTypeFactory().constructParametricType(Map.class, keyClass, valueClass);
-        try {
-            Map<K, V> map = om.readValue(json, type);
-            return map;
-        } catch (IOException e) {
-            logger.error(json + " 转为 Map<" + keyClass.getName() + ", " + valueClass.getName() + ">错误.", e);
-        }
-        return Collections.emptyMap();
+        return null;
     }
 
     public static String getString(String json, String key) {
