@@ -1,7 +1,9 @@
 package com.ahao.util.spring.redis;
 
+import com.ahao.util.commons.io.JSONHelper;
 import com.ahao.util.commons.lang.BeanHelper;
 import com.ahao.util.spring.SpringContextHolder;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,44 +100,9 @@ public class RedisHelper {
     public static String getString(String key) {
         return getStringRedisTemplate().opsForValue().get(key);
     }
-    public static <T> T getObject(String key, Class<T> clazz) {
-        // 1. 参数校验, 处理 void
-        if(StringUtils.isEmpty(key) || clazz == null || clazz == void.class || clazz == Void.class) {
-            return null;
-        }
-
-        // 2. 处理 基本数据 类型
-        if(clazz == boolean.class || clazz == Boolean.class) {
-            return (T) getBoolean(key);
-        }
-        if(clazz == byte.class || clazz == Byte.class) {
-            return (T) getByte(key);
-        }
-        if(clazz == short.class || clazz == Short.class) {
-            return (T) getShort(key);
-        }
-        if(clazz == char.class || clazz == Character.class) {
-            String value = getString(key);
-            return (T) Character.valueOf(value.charAt(0));
-        }
-        if(clazz == int.class || clazz == Integer.class) {
-            return (T) getInteger(key);
-        }
-        if(clazz == long.class || clazz == Long.class) {
-            return (T) getLong(key);
-        }
-        if(clazz == float.class || clazz == Float.class) {
-            return (T) getFloat(key);
-        }
-        if(clazz == double.class || clazz == Double.class) {
-            return (T) getDouble(key);
-        }
-        if(clazz == String.class) {
-            return (T) getString(key);
-        }
-        // 3. 处理 复杂 数据类型
+    public static <T> T getObject(String key, TypeReference<T> typeReference) {
         Object obj = getRedisTemplate().opsForValue().get(key);
-        return BeanHelper.cast(obj, clazz);
+        return JSONHelper.parse(JSONHelper.toString(obj), typeReference);
     }
 
 
