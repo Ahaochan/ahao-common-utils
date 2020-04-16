@@ -1,10 +1,8 @@
 package com.ahao.util.spring.redis;
 
 import com.ahao.util.commons.io.JSONHelper;
-import com.ahao.util.commons.lang.BeanHelper;
 import com.ahao.util.spring.SpringContextHolder;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.RedisServerCommands;
@@ -229,44 +227,9 @@ public class RedisHelper {
         Object value = getStringRedisTemplate().opsForHash().get(key, field);
         return value == null ? null : String.valueOf(value);
     }
-    public static <T> T hgetObject(String key, String field, Class<T> clazz) {
-        // 1. 参数校验, 处理 void
-        if(StringUtils.isEmpty(key) || clazz == null || clazz == void.class || clazz == Void.class) {
-            return null;
-        }
-
-        // 2. 处理 基本数据 类型
-        if(clazz == boolean.class || clazz == Boolean.class) {
-            return (T) hgetBoolean(key, field);
-        }
-        if(clazz == byte.class || clazz == Byte.class) {
-            return (T) hgetByte(key, field);
-        }
-        if(clazz == short.class || clazz == Short.class) {
-            return (T) hgetShort(key, field);
-        }
-        if(clazz == char.class || clazz == Character.class) {
-            String value = hgetString(key, field);
-            return (T) Character.valueOf(value.charAt(0));
-        }
-        if(clazz == int.class || clazz == Integer.class) {
-            return (T) hgetInteger(key, field);
-        }
-        if(clazz == long.class || clazz == Long.class) {
-            return (T) hgetLong(key, field);
-        }
-        if(clazz == float.class || clazz == Float.class) {
-            return (T) hgetFloat(key, field);
-        }
-        if(clazz == double.class || clazz == Double.class) {
-            return (T) hgetDouble(key, field);
-        }
-        if(clazz == String.class) {
-            return (T) hgetString(key, field);
-        }
-        // 3. 处理 复杂 数据类型
+    public static <T> T hgetObject(String key, String field, TypeReference<T> typeReference) {
         Object obj = getRedisTemplate().opsForHash().get(key, field);
-        return BeanHelper.cast(obj, clazz);
+        return JSONHelper.parse(JSONHelper.toString(obj), typeReference);
     }
 
     public static Long hincrBy(String key, Object field, long value) {
