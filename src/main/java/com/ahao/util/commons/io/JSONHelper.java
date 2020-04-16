@@ -10,28 +10,35 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.jackson.JacksonProperties;
 
 import java.io.IOException;
 
 public class JSONHelper {
     private static final Logger logger = LoggerFactory.getLogger(JSONHelper.class);
 
-    private static ObjectMapper om;
+    // ======================================== 依赖 ==================================================
+    private volatile static ObjectMapper om;
+    public static ObjectMapper getOm() {
+        if(om == null) {
+            synchronized (JSONHelper.class) {
+                if(om == null) {
+                    if (SpringContextHolder.enable()) {
+                        om = SpringContextHolder.getBean(ObjectMapper.class, new ObjectMapper());
+                    }
+                }
+            }
+        }
+        return om;
+    }
+    // ======================================== 依赖 ==================================================
 
     static {
-        if (SpringContextHolder.enable()) {
-            om = SpringContextHolder.getBean(ObjectMapper.class, null);
-        }
-        if (om == null) {
-            om = new ObjectMapper();
-            JacksonProperties jacksonProperties = new JacksonProperties();
-        }
+
     }
 
     public static String toString(Object obj) {
         try {
-            String json = om.writeValueAsString(obj);
+            String json = getOm().writeValueAsString(obj);
             return json;
         } catch (JsonProcessingException e) {
             logger.error(obj.toString() + " 转为 json 错误.", e);
@@ -41,7 +48,7 @@ public class JSONHelper {
 
     public static byte[] toBytes(Object obj) {
         try {
-            byte[] json = om.writeValueAsBytes(obj);
+            byte[] json = getOm().writeValueAsBytes(obj);
             return json;
         } catch (JsonProcessingException e) {
             logger.error(obj.toString() + " 转为 json 错误.", e);
@@ -51,7 +58,7 @@ public class JSONHelper {
 
     public static <T> T parse(String json, Class<T> clazz) {
         try {
-            T obj = om.readValue(json, clazz);
+            T obj = getOm().readValue(json, clazz);
             return obj;
         } catch (IOException e) {
             logger.error(json + " 转为 " + clazz.getName() + " 错误.", e);
@@ -61,7 +68,7 @@ public class JSONHelper {
 
     public static <T> T parse(String json, TypeReference<T> typeReference) {
         try {
-            T obj = om.readValue(json, typeReference);
+            T obj = getOm().readValue(json, typeReference);
             return obj;
         } catch (IOException e) {
             logger.error(json + " 转为 " + typeReference.getType() + " 错误.", e);
@@ -74,7 +81,7 @@ public class JSONHelper {
             return "";
         }
         try {
-            JsonNode node = om.readTree(json);
+            JsonNode node = getOm().readTree(json);
             String[] searchNodes = StringUtils.split(key, '.');
 
             for (String searchNode : searchNodes) {
