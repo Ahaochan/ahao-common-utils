@@ -47,6 +47,70 @@
         <mybatis.plus.version>3.3.0</mybatis.plus.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>nexus-aliyun</id>
+            <name>Nexus aliyun</name>
+            <url>http://maven.aliyun.com/nexus/content/repositories/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>center repository</id>
+            <url>http://central.maven.org/maven2/</url>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--======================================================= 自定义模块 =======================================================-->
+            <dependency>
+                <groupId>com.ahao</groupId>
+                <artifactId>ahao-common-utils</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <!--======================================================= 自定义模块 =======================================================-->
+
+            <!--======================================================= Spring =======================================================-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-dependencies</artifactId>
+                <version>2.2.1</version>
+                <type>pom</type>
+            </dependency>
+
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud.alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--======================================================= Spring Boot =======================================================-->
+
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <!--======================================================= Apache工具类 =======================================================-->
         <dependency>
@@ -92,6 +156,14 @@
         </dependency>
         <!--======================================================= Apache工具类 =======================================================-->
 
+        <!--======================================================= 其他工具类 =======================================================-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+            <version>${alibaba.transmittable-thread-local.version}</version>
+        </dependency>
+        <!--======================================================= 其他工具类 =======================================================-->
+
         <!--======================================================= Spring Boot =======================================================-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -110,6 +182,10 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -123,6 +199,14 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <scope>compile</scope>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <!--======================================================= Spring Boot =======================================================-->
 
