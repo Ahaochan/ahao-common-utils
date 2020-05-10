@@ -96,7 +96,10 @@ public class JSONHelper {
                     return "";
                 }
             }
-            String value = node.toString();
+            String value = node.asText();
+            if(StringUtils.isEmpty(value)) {
+                value = node.toString();
+            }
             return value;
         } catch (IOException e) {
             logger.error(json + " 读取 " + key + " 错误.", e);
