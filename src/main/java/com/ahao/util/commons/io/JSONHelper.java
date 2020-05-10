@@ -24,6 +24,8 @@ public class JSONHelper {
                 if(om == null) {
                     if (SpringContextHolder.enable()) {
                         om = SpringContextHolder.getBean(ObjectMapper.class, new ObjectMapper());
+                    } else {
+                        om = new ObjectMapper();
                     }
                 }
             }
