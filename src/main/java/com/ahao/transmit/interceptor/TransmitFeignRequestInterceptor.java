@@ -16,6 +16,6 @@ public class TransmitFeignRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
-        transmitProperties.apply(h -> requestTemplate.header(h.getName(), h.getValue()));
+        transmitProperties.apply(requestTemplate::header);
     }
 }

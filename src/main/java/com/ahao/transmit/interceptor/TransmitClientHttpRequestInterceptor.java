@@ -22,7 +22,7 @@ public class TransmitClientHttpRequestInterceptor implements ClientHttpRequestIn
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         HttpHeaders headers = request.getHeaders();
-        transmitProperties.apply(h -> headers.add(h.getName(), h.getValue()));
+        transmitProperties.apply(headers::add);
         return execution.execute(request, body);
     }
 }
