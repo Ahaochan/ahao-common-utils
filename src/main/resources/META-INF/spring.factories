@@ -1,4 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.ahao.mq.rabbit.RabbitAutoConfig,\
-  com.ahao.hystrix.HystrixAutoConfig
+  com.ahao.hystrix.HystrixAutoConfig,\
+  com.ahao.transmit.TransmitterAutoConfig
 

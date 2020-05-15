@@ -1,4 +1,4 @@
-package com.ahao.transmit.configuration;
+package com.ahao.transmit;
 
 import com.ahao.transmit.filter.TransmitFilter;
 import com.ahao.transmit.interceptor.TransmitClientHttpRequestInterceptor;
@@ -6,15 +6,11 @@ import com.ahao.transmit.interceptor.TransmitFeignRequestInterceptor;
 import com.ahao.transmit.interceptor.TransmitRabbitMessagePostProcessor;
 import com.ahao.transmit.properties.TransmitProperties;
 import feign.Feign;
-import org.springframework.amqp.rabbit.config.AbstractRabbitListenerContainerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.cloud.client.loadbalancer.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -26,17 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@ConditionalOnProperty(prefix = "ahao.transmit", name = "enable")
-public class EnableTransmitterAutoConfiguration {
+@ConditionalOnProperty(prefix = "ahao.transmit", name = "enable", matchIfMissing = true)
+@EnableConfigurationProperties(TransmitProperties.class)
+public class TransmitterAutoConfig {
 
     @Bean
-    @ConfigurationProperties("ahao.transmit")
-    public TransmitProperties transmitProperties() {
-        return new TransmitProperties();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
     public FilterRegistrationBean<TransmitFilter> transmitFilter(TransmitProperties properties) {
         FilterRegistrationBean<TransmitFilter> bean = TransmitFilter.buildFilterBean(properties, "/*");
         return bean;
@@ -73,7 +63,8 @@ public class EnableTransmitterAutoConfiguration {
     }
 
     @Configuration
-    @ConditionalOnBean(RabbitTemplate.class)
+    // @ConditionalOnBean(RabbitTemplate.class)
+    // 依赖链: RabbitTemplate -> RabbitBeanPostProcessor -> MessageProcessorCollector -> Before||After
     public static class TransmitRabbitConfig {
         @Bean
         @ConditionalOnMissingBean
@@ -85,27 +76,6 @@ public class EnableTransmitterAutoConfiguration {
         @ConditionalOnMissingBean
         public TransmitRabbitMessagePostProcessor.After transmitRabbitAfterMessagePostProcessor(TransmitProperties properties) {
             return new TransmitRabbitMessagePostProcessor.After(properties);
-        }
-
-        @Bean
-        @ConditionalOnMissingBean
-        public BeanPostProcessor rabbitBeanPostProcessor(TransmitProperties properties) {
-            return new BeanPostProcessor() {
-                @Override
-                public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-                    if(bean instanceof RabbitTemplate) {
-                        RabbitTemplate rabbitTemplate = (RabbitTemplate) bean;
-                        rabbitTemplate.setAfterReceivePostProcessors(transmitRabbitAfterMessagePostProcessor(properties));
-                        rabbitTemplate.setBeforePublishPostProcessors(transmitRabbitBeforeMessagePostProcessor(properties));
-                    }
-                    if (bean instanceof AbstractRabbitListenerContainerFactory) {
-                        AbstractRabbitListenerContainerFactory<?> factory = (AbstractRabbitListenerContainerFactory<?>) bean;
-                        factory.setAfterReceivePostProcessors(transmitRabbitAfterMessagePostProcessor(properties));
-                        factory.setBeforeSendReplyPostProcessors(transmitRabbitBeforeMessagePostProcessor(properties));
-                    }
-                    return bean;
-                }
-            };
         }
     }
 }
