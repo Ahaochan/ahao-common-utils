@@ -4,11 +4,13 @@ import com.ahao.transmit.util.TransmitContextHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+@ConfigurationProperties("cl.biz-common.transmit")
 public class TransmitProperties {
     private static Logger logger = LoggerFactory.getLogger(TransmitProperties.class);
     private boolean enable = true;
