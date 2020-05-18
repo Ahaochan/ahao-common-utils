@@ -3,7 +3,6 @@ package com.ahao.mq.rabbit;
 import com.ahao.mq.rabbit.convert.JsonMessageConverter;
 import com.ahao.mq.rabbit.processor.MessageProcessorCollector;
 import com.ahao.mq.rabbit.processor.RabbitBeanPostProcessor;
-import com.ahao.transmit.interceptor.TransmitRabbitMessagePostProcessor;
 import com.ahao.util.spring.mq.RabbitMQHelper;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.CustomExchange;
@@ -22,10 +21,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ RabbitTemplate.class, Channel.class })
@@ -53,13 +52,10 @@ public class RabbitAutoConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    public MessageProcessorCollector messageProcessorCollector(ObjectProvider<TransmitRabbitMessagePostProcessor.Before> transmitBefore,
-                                                               ObjectProvider<TransmitRabbitMessagePostProcessor.After> transmitAfter) {
-        List<MessagePostProcessor> beforeList = new ArrayList<>();
-        transmitBefore.ifAvailable(beforeList::add);
-
-        List<MessagePostProcessor> afterList = new ArrayList<>();
-        transmitAfter.ifAvailable(afterList::add);
+    public MessageProcessorCollector messageProcessorCollector(ObjectProvider<List<MessageProcessorCollector.Before>> beforeListProvider,
+                                                               ObjectProvider<List<MessageProcessorCollector.After>> afterListProvider) {
+        List<MessagePostProcessor> beforeList = beforeListProvider.stream().map(s -> (MessagePostProcessor) s).collect(Collectors.toList());
+        List<MessagePostProcessor> afterList =  afterListProvider.stream().map(s -> (MessagePostProcessor) s).collect(Collectors.toList());
 
         MessageProcessorCollector collector = new MessageProcessorCollector();
         collector.setTemplateBeforeMessagePostProcessorList(beforeList);

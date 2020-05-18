@@ -21,6 +21,15 @@ public class MessageProcessorCollector {
         this.factoryAfterMessagePostProcessorList = new ArrayList<>(16);
     }
 
+    public interface Before extends MessagePostProcessor {
+        // 标记处理器, 供 Collector 收集
+    }
+
+    public interface After extends MessagePostProcessor {
+        // 标记处理器, 供 Collector 收集
+    }
+
+
     public void setTemplateBeforeMessagePostProcessorList(List<MessagePostProcessor> templateBeforeMessagePostProcessorList) {
         this.templateBeforeMessagePostProcessorList = templateBeforeMessagePostProcessorList;
     }
