@@ -1,6 +1,6 @@
 package com.ahao.transmit.interceptor;
 
-import com.ahao.mq.rabbit.processor.MessageProcessorCollector;
+import com.ahao.mq.rabbit.processor.RabbitCollector;
 import com.ahao.transmit.properties.TransmitProperties;
 import com.ahao.transmit.util.TransmitContextHolder;
 import org.springframework.amqp.AmqpException;
@@ -23,7 +23,7 @@ public abstract class TransmitRabbitMessagePostProcessor implements MessagePostP
     /**
      * 发送消息拦截器
      */
-    public static class Before extends TransmitRabbitMessagePostProcessor implements MessageProcessorCollector.Before {
+    public static class Before extends TransmitRabbitMessagePostProcessor implements RabbitCollector.Before {
         public Before(TransmitProperties transmitProperties) {
             super(transmitProperties);
         }
@@ -39,7 +39,7 @@ public abstract class TransmitRabbitMessagePostProcessor implements MessagePostP
     /**
      * 接收消息拦截器
      */
-    public static class After extends TransmitRabbitMessagePostProcessor implements MessageProcessorCollector.After {
+    public static class After extends TransmitRabbitMessagePostProcessor implements RabbitCollector.After {
         public After(TransmitProperties transmitProperties) {
             super(transmitProperties);
         }

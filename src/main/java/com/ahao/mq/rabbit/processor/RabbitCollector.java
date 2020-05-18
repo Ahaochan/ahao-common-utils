@@ -1,20 +1,25 @@
 package com.ahao.mq.rabbit.processor;
 
 import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.retry.RecoveryCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * MessagePostProcessor 收集器, 在 {@link RabbitBeanPostProcessor} 中统一设置
+ * 后处理收集器, 在 {@link RabbitBeanPostProcessor} 中统一设置
  */
-public class MessageProcessorCollector {
+public class RabbitCollector {
     private List<MessagePostProcessor> templateBeforeMessagePostProcessorList;
     private List<MessagePostProcessor> templateAfterMessagePostProcessorList;
     private List<MessagePostProcessor> factoryBeforeMessagePostProcessorList;
     private List<MessagePostProcessor> factoryAfterMessagePostProcessorList;
+    private RabbitTemplate.ConfirmCallback confirmCallback;
+    private RabbitTemplate.ReturnCallback returnCallback;
+    private RecoveryCallback<?> recoveryCallback;
 
-    public MessageProcessorCollector() {
+    public RabbitCollector() {
         this.templateBeforeMessagePostProcessorList = new ArrayList<>(16);
         this.templateAfterMessagePostProcessorList = new ArrayList<>(16);
         this.factoryBeforeMessagePostProcessorList = new ArrayList<>(16);
@@ -78,5 +83,27 @@ public class MessageProcessorCollector {
         return this.getFactoryAfterMessagePostProcessorList().toArray(new MessagePostProcessor[0]);
     }
 
+    public RabbitTemplate.ConfirmCallback getConfirmCallback() {
+        return confirmCallback;
+    }
 
+    public void setConfirmCallback(RabbitTemplate.ConfirmCallback confirmCallback) {
+        this.confirmCallback = confirmCallback;
+    }
+
+    public RabbitTemplate.ReturnCallback getReturnCallback() {
+        return returnCallback;
+    }
+
+    public void setReturnCallback(RabbitTemplate.ReturnCallback returnCallback) {
+        this.returnCallback = returnCallback;
+    }
+
+    public RecoveryCallback<?> getRecoveryCallback() {
+        return recoveryCallback;
+    }
+
+    public void setRecoveryCallback(RecoveryCallback<?> recoveryCallback) {
+        this.recoveryCallback = recoveryCallback;
+    }
 }

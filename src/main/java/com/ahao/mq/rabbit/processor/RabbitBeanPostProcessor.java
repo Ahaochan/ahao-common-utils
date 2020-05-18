@@ -10,11 +10,11 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
  */
 public class RabbitBeanPostProcessor implements BeanPostProcessor {
 
-    private MessageProcessorCollector messageProcessorCollector;
+    private RabbitCollector messageProcessorCollector;
     public RabbitBeanPostProcessor() {
-        this(new MessageProcessorCollector());
+        this(new RabbitCollector());
     }
-    public RabbitBeanPostProcessor(MessageProcessorCollector messageProcessorCollector) {
+    public RabbitBeanPostProcessor(RabbitCollector messageProcessorCollector) {
         this.messageProcessorCollector = messageProcessorCollector;
     }
 
@@ -38,8 +38,8 @@ public class RabbitBeanPostProcessor implements BeanPostProcessor {
         bean.setBeforePublishPostProcessors(messageProcessorCollector.getTemplateBeforeMessagePostProcessorArray());
         bean.setAfterReceivePostProcessors(messageProcessorCollector.getTemplateAfterMessagePostProcessorArray());
 
-        // bean.setConfirmCallback();
-        // bean.setReturnCallback();
-        // bean.setRecoveryCallback();
+        bean.setConfirmCallback(messageProcessorCollector.getConfirmCallback());
+        bean.setReturnCallback(messageProcessorCollector.getReturnCallback());
+        bean.setRecoveryCallback(messageProcessorCollector.getRecoveryCallback());
     }
 }
