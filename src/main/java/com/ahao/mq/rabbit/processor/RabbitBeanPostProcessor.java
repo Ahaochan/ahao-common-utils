@@ -10,12 +10,12 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
  */
 public class RabbitBeanPostProcessor implements BeanPostProcessor {
 
-    private RabbitCollector messageProcessorCollector;
+    private RabbitCollector rabbitCollector;
     public RabbitBeanPostProcessor() {
         this(new RabbitCollector());
     }
-    public RabbitBeanPostProcessor(RabbitCollector messageProcessorCollector) {
-        this.messageProcessorCollector = messageProcessorCollector;
+    public RabbitBeanPostProcessor(RabbitCollector rabbitCollector) {
+        this.rabbitCollector = rabbitCollector;
     }
 
     @Override
@@ -30,16 +30,18 @@ public class RabbitBeanPostProcessor implements BeanPostProcessor {
     }
 
     private void warpContainerFactory(AbstractRabbitListenerContainerFactory bean, String beanName) {
-        bean.setBeforeSendReplyPostProcessors(messageProcessorCollector.getFactoryAfterMessagePostProcessorArray());
-        bean.setAfterReceivePostProcessors(messageProcessorCollector.getFactoryAfterMessagePostProcessorArray()); // 处理 @RabbitListener
+        bean.setBeforeSendReplyPostProcessors(rabbitCollector.getFactoryAfterMessagePostProcessorArray());
+        bean.setAfterReceivePostProcessors(rabbitCollector.getFactoryAfterMessagePostProcessorArray()); // 处理 @RabbitListener
     }
 
     private void warpRabbitTemplate(RabbitTemplate bean, String beanName) {
-        bean.setBeforePublishPostProcessors(messageProcessorCollector.getTemplateBeforeMessagePostProcessorArray());
-        bean.setAfterReceivePostProcessors(messageProcessorCollector.getTemplateAfterMessagePostProcessorArray());
+        bean.setBeforePublishPostProcessors(rabbitCollector.getTemplateBeforeMessagePostProcessorArray());
+        bean.setAfterReceivePostProcessors(rabbitCollector.getTemplateAfterMessagePostProcessorArray());
 
-        bean.setConfirmCallback(messageProcessorCollector.getConfirmCallback());
-        bean.setReturnCallback(messageProcessorCollector.getReturnCallback());
-        bean.setRecoveryCallback(messageProcessorCollector.getRecoveryCallback());
+        bean.setConfirmCallback(rabbitCollector.getConfirmCallback());
+        bean.setReturnCallback(rabbitCollector.getReturnCallback());
+        bean.setRecoveryCallback(rabbitCollector.getRecoveryCallback());
+
+        bean.setCorrelationDataPostProcessor(rabbitCollector.getCorrelationDataPostProcessor());
     }
 }

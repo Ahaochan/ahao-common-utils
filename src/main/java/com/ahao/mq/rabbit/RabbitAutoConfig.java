@@ -11,6 +11,7 @@ import org.springframework.amqp.core.CustomExchange;
 import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.core.CorrelationDataPostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.ObjectProvider;
@@ -77,7 +78,9 @@ public class RabbitAutoConfig {
     @Bean
     @ConditionalOnMissingBean
     public RabbitCollector messageProcessorCollector(ObjectProvider<List<RabbitCollector.Before>> beforeListProvider,
-                                                     ObjectProvider<List<RabbitCollector.After>> afterListProvider) {
+                                                     ObjectProvider<List<RabbitCollector.After>> afterListProvider,
+                                                     RabbitTemplate.ConfirmCallback confirmCallback, RabbitTemplate.ReturnCallback returnCallback,
+                                                     ObjectProvider<CorrelationDataPostProcessor> correlationDataPostProcessor) {
         List<MessagePostProcessor> beforeList = beforeListProvider.stream().map(s -> (MessagePostProcessor) s).collect(Collectors.toList());
         List<MessagePostProcessor> afterList = afterListProvider.stream().map(s -> (MessagePostProcessor) s).collect(Collectors.toList());
 
@@ -86,6 +89,11 @@ public class RabbitAutoConfig {
         collector.setTemplateAfterMessagePostProcessorList(afterList);
         collector.setFactoryBeforeMessagePostProcessorList(beforeList);
         collector.setFactoryAfterMessagePostProcessorList(afterList);
+
+        collector.setConfirmCallback(confirmCallback);
+        collector.setReturnCallback(returnCallback);
+
+        correlationDataPostProcessor.ifAvailable(collector::setCorrelationDataPostProcessor);
         return collector;
     }
 

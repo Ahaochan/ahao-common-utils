@@ -1,6 +1,7 @@
 package com.ahao.mq.rabbit.processor;
 
 import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.rabbit.core.CorrelationDataPostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.retry.RecoveryCallback;
 
@@ -15,6 +16,7 @@ public class RabbitCollector {
     private List<MessagePostProcessor> templateAfterMessagePostProcessorList;
     private List<MessagePostProcessor> factoryBeforeMessagePostProcessorList;
     private List<MessagePostProcessor> factoryAfterMessagePostProcessorList;
+    private CorrelationDataPostProcessor correlationDataPostProcessor;
     private RabbitTemplate.ConfirmCallback confirmCallback;
     private RabbitTemplate.ReturnCallback returnCallback;
     private RecoveryCallback<?> recoveryCallback;
@@ -81,6 +83,14 @@ public class RabbitCollector {
 
     public MessagePostProcessor[] getFactoryAfterMessagePostProcessorArray() {
         return this.getFactoryAfterMessagePostProcessorList().toArray(new MessagePostProcessor[0]);
+    }
+
+    public CorrelationDataPostProcessor getCorrelationDataPostProcessor() {
+        return correlationDataPostProcessor;
+    }
+
+    public void setCorrelationDataPostProcessor(CorrelationDataPostProcessor correlationDataPostProcessor) {
+        this.correlationDataPostProcessor = correlationDataPostProcessor;
     }
 
     public RabbitTemplate.ConfirmCallback getConfirmCallback() {
