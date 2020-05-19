@@ -2,6 +2,7 @@ package com.ahao.exception;
 
 import com.ahao.domain.entity.AjaxDTO;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.annotation.Order;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -10,6 +11,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
  */
 @RestControllerAdvice("com.ahao")
 @Order(0)
+@ConditionalOnClass(DispatcherServlet.class)
 public class ValidatorExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public AjaxDTO methodArgumentNotValidException(MethodArgumentNotValidException ex) {

@@ -3,6 +3,7 @@ package com.ahao.exception;
 import com.ahao.domain.entity.AjaxDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.Servlet;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestControllerAdvice("com.ahao")
 @Order(Ordered.LOWEST_PRECEDENCE)
+@ConditionalOnClass(Servlet.class)
 public class SystemExceptionHandler {
     public static final Logger logger = LoggerFactory.getLogger(SystemExceptionHandler.class);
 
