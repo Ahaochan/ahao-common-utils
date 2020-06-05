@@ -2,6 +2,7 @@ package com.ahao.util.commons.io;
 
 
 import com.ahao.util.spring.SpringContextHolder;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,24 +13,46 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
+import static com.fasterxml.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT;
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
+import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 
 public class JSONHelper {
     private static final Logger logger = LoggerFactory.getLogger(JSONHelper.class);
 
     // ======================================== 依赖 ==================================================
     private volatile static ObjectMapper om;
+
     public static ObjectMapper getOm() {
-        if(om == null) {
+        if (om == null) {
             synchronized (JSONHelper.class) {
-                if(om == null) {
+                if (om == null) {
                     if (SpringContextHolder.enable()) {
                         om = SpringContextHolder.getBean(ObjectMapper.class, new ObjectMapper());
                     } else {
-                        om = new ObjectMapper();
+                        om = JSONHelper.withDefault();
                     }
                 }
             }
         }
+        return om;
+    }
+    public static ObjectMapper withDefault() {
+        ObjectMapper om = new ObjectMapper();
+        om.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+        om.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        om.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
+
+        // serialization
+        om.disable(INDENT_OUTPUT, FAIL_ON_EMPTY_BEANS);
+
+        // deserialization
+        om.enable(ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+        om.disable(FAIL_ON_UNKNOWN_PROPERTIES);
         return om;
     }
     // ======================================== 依赖 ==================================================
@@ -97,7 +120,7 @@ public class JSONHelper {
                 }
             }
             String value = node.asText();
-            if(StringUtils.isEmpty(value)) {
+            if (StringUtils.isEmpty(value)) {
                 value = node.toString();
             }
             return value;
