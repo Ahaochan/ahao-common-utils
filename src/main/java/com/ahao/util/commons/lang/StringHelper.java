@@ -131,6 +131,47 @@ public class StringHelper {
         return sb.toString();
     }
 
+    /**
+     * 字符串转驼峰
+     * <pre>
+     * StringUtil.toCamelcase(null, *)              = null
+     * StringUtil.toCamelcase("", *)                = ""
+     * StringUtil.toCamelcase("_a", '_')            = "A"
+     * StringUtil.toCamelcase("_A", '_')            = "A"
+     * StringUtil.toCamelcase("my_order_id", '_')   = "MyOrderId"
+     * </pre>
+     * @param source 源字符串
+     * @param split 分隔符
+     * @return 驼峰式字符串
+     */
+    public static String toCamelcase(String source, char split) {
+        if (source == null || source.length() <= 1) {
+            return StringUtils.remove(source, split);
+        }
+        int len = source.length();
+        StringBuilder sb = new StringBuilder(len);
+        int gap = 32;
+        for (int i = 1; i < len; i++) {
+            char ch1 = source.charAt(i - 1);
+            char ch2 = source.charAt(i);
+
+            if (ch1 != '_' || ch2 != '_') {
+                if (ch1 == '_') {
+                    sb.append(ch2 >= 'a' && ch2 <= 'z' ? (char) (ch2 - gap) : ch2);
+                    i++;
+                } else {
+                    sb.append(ch1);
+                }
+            }
+        }
+
+        char lastChar = source.charAt(len - 1);
+        if (lastChar != '_' && source.charAt(len - 2) != '_') {
+            sb.append(lastChar);
+        }
+        return sb.toString();
+    }
+
     // ====================================== 汉字处理相关 ==================================================
     public static boolean containChinese(CharSequence charSequence) {
         for (int i = 0, len = charSequence.length(); i < len; i++) {

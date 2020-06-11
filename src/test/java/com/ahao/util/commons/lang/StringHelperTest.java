@@ -57,6 +57,26 @@ class StringHelperTest {
         });
     }
 
+    @Test
+    public void toCamelcase() {
+        char split = '_';
+        Assertions.assertNull(StringHelper.toCamelcase(null, split));
+        Assertions.assertEquals("", StringHelper.toCamelcase("", split));
+        Assertions.assertEquals("null", StringHelper.toCamelcase("null", split));
+        Assertions.assertEquals("", StringHelper.toCamelcase("" + split, split));
+        Assertions.assertEquals("A", StringHelper.toCamelcase(split + "a", split));
+        Assertions.assertEquals("A", StringHelper.toCamelcase(split + "A", split));
+        Assertions.assertEquals("a", StringHelper.toCamelcase("a" + split, split));
+        Assertions.assertEquals("A", StringHelper.toCamelcase("A" + split, split));
+        Assertions.assertEquals("MyOrderId", StringHelper.toCamelcase("MyOrderId", split));
+        Assertions.assertEquals("MyOrderId", StringHelper.toCamelcase("My_OrderId", split));
+        Assertions.assertEquals("MyOrderId", StringHelper.toCamelcase("_My_Order_Id_", split));
+        Assertions.assertEquals("myOrderId", StringHelper.toCamelcase("my_order_id", split));
+        Assertions.assertEquals("MyOrderId", StringHelper.toCamelcase("My_Order_Id", split));
+        Assertions.assertEquals("MYORDERID", StringHelper.toCamelcase("_M_y_O_r_d_e_r_I_d", split));
+        Assertions.assertEquals("MYORDERID", StringHelper.toCamelcase("___M___y___O___r___d___e___r___I___d", split));
+    }
+
 
     // ====================================== 汉字处理相关 ==================================================
     @Test
