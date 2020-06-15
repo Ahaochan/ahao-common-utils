@@ -32,7 +32,7 @@ public class JSONHelper {
             synchronized (JSONHelper.class) {
                 if (om == null) {
                     if (SpringContextHolder.enable()) {
-                        om = SpringContextHolder.getBean(ObjectMapper.class, new ObjectMapper());
+                        om = SpringContextHolder.getBean(ObjectMapper.class, JSONHelper.withDefault());
                     } else {
                         om = JSONHelper.withDefault();
                     }
