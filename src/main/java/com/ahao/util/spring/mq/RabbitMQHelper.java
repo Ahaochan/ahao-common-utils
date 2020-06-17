@@ -100,7 +100,7 @@ public class RabbitMQHelper {
      * 构建 RabbitTemplate
      * @see org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration.RabbitTemplateConfiguration#rabbitTemplate(RabbitProperties, ObjectProvider, ObjectProvider, ConnectionFactory)
      */
-    public static RabbitTemplate buildTemplate(RabbitProperties properties) {
+    public static RabbitTemplate withDefault(RabbitProperties properties) {
         PropertyMapper map = PropertyMapper.get();
         RabbitTemplate template = new RabbitTemplate(getFactory());
 
