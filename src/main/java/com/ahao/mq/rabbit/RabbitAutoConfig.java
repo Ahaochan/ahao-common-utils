@@ -13,6 +13,7 @@ import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.core.CorrelationDataPostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.ContentTypeDelegatingMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
@@ -41,9 +42,15 @@ public class RabbitAutoConfig {
     @Bean
     @ConditionalOnMissingBean
     public MessageConverter messageConverter() {
-        JsonMessageConverter converter = new JsonMessageConverter();
-        converter.setCharset(StandardCharsets.UTF_8);
-        converter.setUseRawJson(false);
+        JsonMessageConverter defaultConvert = new JsonMessageConverter();
+        defaultConvert.setCharset(StandardCharsets.UTF_8);
+        defaultConvert.setUseRawJson(false);
+
+        ContentTypeDelegatingMessageConverter converter = new ContentTypeDelegatingMessageConverter(defaultConvert);
+        // converter.addDelegate("text", null);
+        // converter.addDelegate("image", null);
+        converter.addDelegate("json", defaultConvert);
+        converter.addDelegate("application/json", defaultConvert);
         return converter;
     }
 
