@@ -1,7 +1,6 @@
 package com.ahao.mq.rabbit.processor;
 
 import org.springframework.amqp.rabbit.config.AbstractRabbitListenerContainerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
@@ -20,9 +19,6 @@ public class RabbitBeanPostProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        if(bean instanceof RabbitTemplate) {
-            warpRabbitTemplate((RabbitTemplate) bean, beanName);
-        }
         if (bean instanceof AbstractRabbitListenerContainerFactory) {
             warpContainerFactory((AbstractRabbitListenerContainerFactory) bean, beanName);
         }
@@ -32,16 +28,5 @@ public class RabbitBeanPostProcessor implements BeanPostProcessor {
     private void warpContainerFactory(AbstractRabbitListenerContainerFactory bean, String beanName) {
         bean.setBeforeSendReplyPostProcessors(rabbitCollector.getFactoryAfterMessagePostProcessorArray());
         bean.setAfterReceivePostProcessors(rabbitCollector.getFactoryAfterMessagePostProcessorArray()); // 处理 @RabbitListener
-    }
-
-    private void warpRabbitTemplate(RabbitTemplate bean, String beanName) {
-        bean.setBeforePublishPostProcessors(rabbitCollector.getTemplateBeforeMessagePostProcessorArray());
-        bean.setAfterReceivePostProcessors(rabbitCollector.getTemplateAfterMessagePostProcessorArray());
-
-        bean.setConfirmCallback(rabbitCollector.getConfirmCallback());
-        bean.setReturnCallback(rabbitCollector.getReturnCallback());
-        bean.setRecoveryCallback(rabbitCollector.getRecoveryCallback());
-
-        bean.setCorrelationDataPostProcessor(rabbitCollector.getCorrelationDataPostProcessor());
     }
 }

@@ -24,7 +24,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,41 +56,15 @@ public class RabbitAutoConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    public RabbitTemplate.ConfirmCallback confirmCallback() {
-        return (data, ack, cause) -> {
-            if (!ack) {
-                logger.error("消息[{}]发送失败, cause:{}", data, cause);
-            } else {
-                logger.error("消息[{}]发送成功, cause:{}", data, cause);
-            }
-        };
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public RabbitTemplate.ReturnCallback returnCallback() {
-        return (message, replyCode, replyText, exchange, routingKey) ->
-            logger.info(MessageFormat.format("消息发送ReturnCallback:{0},{1},{2},{3},{4},{5}",
-                message, replyCode, replyText, exchange, routingKey));
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
     public RabbitCollector messageProcessorCollector(ObjectProvider<List<RabbitCollector.Before>> beforeListProvider,
                                                      ObjectProvider<List<RabbitCollector.After>> afterListProvider,
-                                                     RabbitTemplate.ConfirmCallback confirmCallback, RabbitTemplate.ReturnCallback returnCallback,
                                                      ObjectProvider<CorrelationDataPostProcessor> correlationDataPostProcessor) {
         List<MessagePostProcessor> beforeList = beforeListProvider.stream().map(s -> (MessagePostProcessor) s).collect(Collectors.toList());
         List<MessagePostProcessor> afterList = afterListProvider.stream().map(s -> (MessagePostProcessor) s).collect(Collectors.toList());
 
         RabbitCollector collector = new RabbitCollector();
-        collector.setTemplateBeforeMessagePostProcessorList(beforeList);
-        collector.setTemplateAfterMessagePostProcessorList(afterList);
         collector.setFactoryBeforeMessagePostProcessorList(beforeList);
         collector.setFactoryAfterMessagePostProcessorList(afterList);
-
-        collector.setConfirmCallback(confirmCallback);
-        collector.setReturnCallback(returnCallback);
 
         correlationDataPostProcessor.ifAvailable(collector::setCorrelationDataPostProcessor);
         return collector;
@@ -103,5 +76,4 @@ public class RabbitAutoConfig {
         RabbitBeanPostProcessor rabbitBeanPostProcessor = new RabbitBeanPostProcessor(collector);
         return rabbitBeanPostProcessor;
     }
-
 }

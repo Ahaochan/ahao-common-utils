@@ -1,13 +1,19 @@
 package com.ahao.util.spring.mq;
 
+import com.ahao.mq.rabbit.convert.JsonMessageConverter;
 import com.ahao.util.spring.SpringContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
+import org.springframework.boot.context.properties.PropertyMapper;
 
+import java.time.Duration;
 import java.util.UUID;
 
 public class RabbitMQHelper {
@@ -18,9 +24,20 @@ public class RabbitMQHelper {
     public static final String DELAY_EXCHANGE_NAME = "delay_exchange";
 
     // ======================================== 依赖 ==================================================
+    private volatile static ConnectionFactory factory;
     private volatile static RabbitAdmin rabbitAdmin;
     private volatile static RabbitTemplate rabbitTemplate;
     private volatile static Exchange delayExchange;
+    private static ConnectionFactory getFactory() {
+        if(factory == null) {
+            synchronized (RabbitMQHelper.class) {
+                if(factory == null) {
+                    init();
+                }
+            }
+        }
+        return factory;
+    }
     public static RabbitTemplate getRabbitTemplate() {
         if(rabbitTemplate == null) {
             synchronized (RabbitMQHelper.class) {
@@ -41,7 +58,7 @@ public class RabbitMQHelper {
         }
         return rabbitAdmin;
     }
-    public static Exchange getDelayExchange() {
+    private static Exchange getDelayExchange() {
         if(delayExchange == null) {
             synchronized (RabbitMQHelper.class) {
                 if(delayExchange == null) {
@@ -52,6 +69,7 @@ public class RabbitMQHelper {
         return delayExchange;
     }
     private static void init() {
+        RabbitMQHelper.factory = SpringContextHolder.getBean(ConnectionFactory.class);
         RabbitMQHelper.rabbitTemplate = SpringContextHolder.getBean(RabbitTemplate.class);
         RabbitMQHelper.rabbitAdmin = SpringContextHolder.getBean(RabbitAdmin.class);
         RabbitMQHelper.delayExchange = SpringContextHolder.getBean(DELAY_EXCHANGE_NAME);
@@ -76,5 +94,26 @@ public class RabbitMQHelper {
             messageProperties.getHeaders().put("x-delay", delayMilliSeconds);
             return message;
         }, correlationId);
+    }
+
+    /**
+     * 构建 RabbitTemplate
+     * @see org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration.RabbitTemplateConfiguration#rabbitTemplate(RabbitProperties, ObjectProvider, ObjectProvider, ConnectionFactory)
+     */
+    public static RabbitTemplate buildTemplate(RabbitProperties properties) {
+        PropertyMapper map = PropertyMapper.get();
+        RabbitTemplate template = new RabbitTemplate(getFactory());
+
+        template.setMessageConverter(new JsonMessageConverter());
+        if(properties != null) {
+            RabbitProperties.Template templateProperties = properties.getTemplate();
+
+            map.from(templateProperties::getReceiveTimeout).whenNonNull().as(Duration::toMillis).to(template::setReceiveTimeout);
+            map.from(templateProperties::getReplyTimeout).whenNonNull().as(Duration::toMillis).to(template::setReplyTimeout);
+            map.from(templateProperties::getExchange).to(template::setExchange);
+            map.from(templateProperties::getRoutingKey).to(template::setRoutingKey);
+            map.from(templateProperties::getDefaultReceiveQueue).whenNonNull().to(template::setDefaultReceiveQueue);
+        }
+        return template;
     }
 }
