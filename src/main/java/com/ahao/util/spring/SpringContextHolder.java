@@ -29,25 +29,21 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
 
     @SuppressWarnings("unchecked")
     public static <T> T getBean(String beanName) {
-        assertApplicationContext();
-        return (T) applicationContext.getBean(beanName);
+        return (T) getApplicationContext().getBean(beanName);
     }
 
     public static <T> T getBean(Class<T> requiredType) {
-        assertApplicationContext();
-        return applicationContext.getBean(requiredType);
+        return getApplicationContext().getBean(requiredType);
     }
 
     public static <T> T getBean(Class<T> requiredType, T defaultValue) {
-        assertApplicationContext();
-        ObjectProvider<T> beanProvider = applicationContext.getBeanProvider(requiredType);
+        ObjectProvider<T> beanProvider = getApplicationContext().getBeanProvider(requiredType);
         T bean = beanProvider.getIfAvailable(() -> defaultValue);
         return bean;
     }
 
     public static String getValue(String key) {
-        assertApplicationContext();
-        return applicationContext.getEnvironment().getProperty(key);
+        return getApplicationContext().getEnvironment().getProperty(key);
     }
 
     public static boolean getBoolean(String key) {
