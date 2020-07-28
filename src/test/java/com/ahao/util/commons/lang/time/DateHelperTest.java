@@ -57,4 +57,25 @@ public class DateHelperTest {
         System.out.println(DateHelper.getString(actual3, format));
         Assertions.assertTrue(Math.abs(except3.getTime() - actual3.getTime()) < 10);
     }
+
+    @Test
+    public void multiDateFormat() throws Exception {
+        String now1 = "2019-10-24";
+        String now2 = "2019-10-24 10:24:10";
+
+        MultiDateFormat dateFormat = new MultiDateFormat();
+        Date parse1 = dateFormat.parse(now1);
+        Date parse2 = dateFormat.parse(now2);
+        System.out.println(parse1);
+        System.out.println(parse2);
+        Assertions.assertNotNull(parse1);
+        Assertions.assertNotNull(parse2);
+
+        String format1 = dateFormat.format(parse1);
+        String format2 = dateFormat.format(parse2);
+        System.out.println(format1);
+        System.out.println(format2);
+        Assertions.assertEquals(now1 + " 00:00:00", format1);
+        Assertions.assertEquals(now2, format2);
+    }
 }
