@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Arrays;
 import java.util.List;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class JacksonHttpMessageConvertersWebMvcConfigurer implements WebMvcConfigurer {
 
     /**
