@@ -2,6 +2,7 @@ package com.ahao.spring.web.config;
 
 import com.ahao.spring.web.converter.MappingJackson2HttpMessageConverterRegister;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration(proxyBeanMethods = false)
+@ConditionalOnWebApplication
 public class JacksonHttpMessageConvertersWebMvcConfigurer implements WebMvcConfigurer {
 
     /**
