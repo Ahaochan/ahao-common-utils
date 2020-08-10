@@ -1,5 +1,6 @@
 package com.ahao.util.spring.mail;
 
+import com.ahao.util.commons.CloneHelper;
 import com.ahao.util.spring.SpringContextHolder;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -220,7 +221,7 @@ public class MailHelper {
         }
 
         public Builder setSendDate(Date sendDate) {
-            this.sendDate = sendDate;
+            this.sendDate = CloneHelper.clone(sendDate);
             return this;
         }
     }
