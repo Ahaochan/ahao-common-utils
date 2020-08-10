@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MappingJackson2HttpMessageConverterRegister implements BeanDefinitionRegistryPostProcessor {
-    public static final Map<PropertyNamingStrategy, MediaType> strategyMediaTypeMap = new HashMap<PropertyNamingStrategy, MediaType>() {{
+    private static final Map<PropertyNamingStrategy, MediaType> strategyMediaTypeMap = new HashMap<PropertyNamingStrategy, MediaType>() {{
         put(PropertyNamingStrategy.SNAKE_CASE,       new MediaType("application", "vnd.snake.case+json"));
         put(PropertyNamingStrategy.UPPER_CAMEL_CASE, new MediaType("application", "vnd.upper.camel.case+json"));
         put(PropertyNamingStrategy.LOWER_CAMEL_CASE, new MediaType("application", "vnd.lower.camel.case+json"));

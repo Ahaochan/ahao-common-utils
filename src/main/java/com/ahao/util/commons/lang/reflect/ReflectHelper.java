@@ -137,11 +137,11 @@ public class ReflectHelper {
         }
         return fields;
     }
-    public static Field getField(Object obj, String fieldName) {
-        if(obj == null || StringUtils.isEmpty(fieldName)) {
+    public static Field getField(Class<?> searchClass, String fieldName) {
+        if(searchClass == null) {
             return null;
         }
-        Class<?> clazz = obj.getClass();
+        Class<?> clazz = searchClass;
         Field field = null;
         while(clazz != null && field == null) {
             Field[] fields = clazz.getDeclaredFields();
@@ -154,9 +154,28 @@ public class ReflectHelper {
             clazz = clazz.getSuperclass();
         }
         if(field == null) {
-            logger.error("{}没有找到{}属性!", obj.getClass().getName(), fieldName);
+            logger.error("{}没有找到{}属性!", searchClass.getName(), fieldName);
         }
         return field;
+    }
+    public static Field getField(Object obj, String fieldName) {
+        if(obj == null || StringUtils.isEmpty(fieldName)) {
+            return null;
+        }
+        Class<?> clazz = obj.getClass();
+        return getField(clazz, fieldName);
+    }
+    public static <T> T getValue(Class<?> searchClass, String fieldName) {
+        if(searchClass == null) {
+            return null;
+        }
+        Class<?> clazz = searchClass;
+        Field field = getField(searchClass, fieldName);
+        if(field == null) {
+            logger.error("{}没有找到{}属性!", clazz.getName(), fieldName);
+            return null;
+        }
+        return getValue(null, field);
     }
     public static <T> T getValue(Object obj, String fieldName) {
         if(obj == null || StringUtils.isEmpty(fieldName)) {
@@ -171,16 +190,15 @@ public class ReflectHelper {
         return getValue(obj, field);
     }
     public static <T> T getValue(Object obj, Field field) {
-        if(obj == null || field == null) {
+        if(field == null) {
             return null;
         }
-        Class<?> clazz = obj.getClass();
         boolean accessible = field.isAccessible();
         field.setAccessible(true);
         try {
             return (T) field.get(obj);
         } catch (IllegalAccessException e) {
-            logger.error("获取{}的{}属性的值失败!", clazz.getName(), field.getName());
+            logger.error("获取{}属性的值失败!", field.getName());
         } finally {
             field.setAccessible(accessible);
         }
