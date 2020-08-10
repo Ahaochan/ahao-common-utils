@@ -1,5 +1,7 @@
 package com.ahao.domain.entity;
 
+import com.ahao.util.commons.CloneHelper;
+
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
 import java.util.Objects;
@@ -40,19 +42,19 @@ public class BaseDO {
     }
 
     public Date getCreateTime() {
-        return createTime;
+        return CloneHelper.clone(createTime);
     }
 
     public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+        this.createTime = CloneHelper.clone(createTime);
     }
 
     public Date getUpdateTime() {
-        return updateTime;
+        return CloneHelper.clone(updateTime);
     }
 
     public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+        this.updateTime = CloneHelper.clone(updateTime);
     }
 
     @Override
