@@ -39,7 +39,7 @@ public class YamlPropertiesTest {
     }
 
     @Test
-    public void Prop2yaml() throws Exception {
+    public void prop2yaml() throws Exception {
         List<Resource> resources = Arrays.asList(
             new ClassPathResource("properties/test1.properties"),
             new ClassPathResource("properties/test2.properties")
