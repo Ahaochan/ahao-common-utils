@@ -20,7 +20,7 @@ public class CloneHelper {
         if(instance instanceof Cloneable) {
             return ObjectUtils.clone(instance);
         } else if(instance instanceof String) {
-            return (T) String.valueOf(instance);
+            return (T) new String(String.valueOf(instance));
         }
         return null;
     }
