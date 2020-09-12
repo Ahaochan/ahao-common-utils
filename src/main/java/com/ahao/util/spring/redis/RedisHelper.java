@@ -1,13 +1,16 @@
 package com.ahao.util.spring.redis;
 
 import com.ahao.util.commons.io.JSONHelper;
+import com.ahao.util.commons.lang.reflect.ReflectHelper;
 import com.ahao.util.spring.SpringContextHolder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.RedisServerCommands;
+import org.springframework.data.redis.connection.RedisStringCommands;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 import java.io.IOException;
@@ -116,29 +119,55 @@ public class RedisHelper {
     public static void set(String key, Object value) {
         getRedisTemplate().opsForValue().set(key, value);
     }
-    public static <T extends Number> void setEx(String key, T value, long expiredSeconds) {
-        setEx(key, value == null ? null : String.valueOf(value), expiredSeconds);
+    public static <T extends Number> void setEx(String key, T value, long timeout, TimeUnit unit) {
+        setEx(key, value == null ? null : String.valueOf(value), timeout, unit);
     }
-    public static void setEx(String key, Boolean value, long expiredSeconds) {
-        setEx(key, value == null ? null : String.valueOf(value), expiredSeconds);
+    public static void setEx(String key, Boolean value, long timeout, TimeUnit unit) {
+        setEx(key, value == null ? null : String.valueOf(value), timeout, unit);
     }
-    public static void setEx(String key, String value, long expiredSeconds) {
-        getStringRedisTemplate().opsForValue().set(key, value, expiredSeconds, TimeUnit.SECONDS);
+    public static void setEx(String key, String value, long timeout, TimeUnit unit) {
+        getStringRedisTemplate().opsForValue().set(key, value, timeout, unit);
     }
-    public static void setEx(String key, Object value, long expiredSeconds) {
-        getRedisTemplate().opsForValue().set(key, value, expiredSeconds, TimeUnit.SECONDS);
+    public static void setEx(String key, Object value, long timeout, TimeUnit unit) {
+        getRedisTemplate().opsForValue().set(key, value, timeout, unit);
     }
-    public static <T extends Number> Boolean setNx(String key, T value, long expiredSeconds) {
-        return setNx(key, value == null ? null : String.valueOf(value), expiredSeconds);
+    public static <T extends Number> Boolean setNx(String key, T value, long timeout, TimeUnit unit) {
+        return setNx(key, value == null ? null : String.valueOf(value), timeout, unit);
     }
-    public static Boolean setNx(String key, Boolean value, long expiredSeconds) {
-        return setNx(key, value == null ? null : String.valueOf(value), expiredSeconds);
+    public static Boolean setNx(String key, Boolean value, long timeout, TimeUnit unit) {
+        return setNx(key, value == null ? null : String.valueOf(value), timeout, unit);
     }
-    public static Boolean setNx(String key, String value, long expiredSeconds) {
-        return getStringRedisTemplate().opsForValue().setIfAbsent(key, value, expiredSeconds, TimeUnit.SECONDS);
+    public static Boolean setNx(String key, String value, long timeout, TimeUnit unit) {
+        return getStringRedisTemplate().opsForValue().setIfAbsent(key, value, timeout, unit);
     }
-    public static Boolean setNx(String key, Object value, long expiredSeconds) {
-        return getRedisTemplate().opsForValue().setIfAbsent(key, value, expiredSeconds, TimeUnit.SECONDS);
+    public static Boolean setNx(String key, Object value, long timeout, TimeUnit unit) {
+        return getRedisTemplate().opsForValue().setIfAbsent(key, value, timeout, unit);
+    }
+    @Deprecated
+    public static <T extends Number> Boolean setNxOld(String key, T value, long timeout, TimeUnit unit) {
+        return setNxOld(key, value == null ? null : String.valueOf(value), timeout, unit);
+    }
+    @Deprecated
+    public static Boolean setNxOld(String key, Boolean value, long timeout, TimeUnit unit) {
+        return setNxOld(key, value == null ? null : String.valueOf(value), timeout, unit);
+    }
+    @Deprecated
+    public static Boolean setNxOld(String key, String value, long timeout, TimeUnit unit) {
+        StringRedisTemplate redisTemplate = getStringRedisTemplate();
+        byte[] rawKey = ReflectHelper.executeMethod(redisTemplate, "rawKey", key);
+        byte[] rawValue = ReflectHelper.executeMethod(redisTemplate, "rawValue", value);
+        Expiration expiration = Expiration.from(timeout, unit);
+        return redisTemplate.execute((connection) ->
+            connection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent()), true);
+    }
+    @Deprecated
+    public static Boolean setNxOld(String key, Object value, long timeout, TimeUnit unit) {
+        RedisTemplate<String, Object> redisTemplate = getRedisTemplate();
+        byte[] rawKey = ReflectHelper.executeMethod(redisTemplate, "rawKey", key);
+        byte[] rawValue = ReflectHelper.executeMethod(redisTemplate, "rawValue", value);
+        Expiration expiration = Expiration.from(timeout, unit);
+        return redisTemplate.execute((connection) ->
+            connection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent()), true);
     }
 
 
@@ -148,11 +177,11 @@ public class RedisHelper {
     public static Long incr(String key, long value) {
         return getStringRedisTemplate().opsForValue().increment(key, value);
     }
-    public static Long incrEx(String key, long expire, TimeUnit timeUnit) {
+    public static Long incrEx(String key, long timeout, TimeUnit timeUnit) {
         String script = "local v = redis.call('INCR', KEYS[1]) if v == 1 then redis.call('EXPIRE', KEYS[1], ARGV[1]) end return v";
         DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(script, Long.class);
 
-        String expireTime = String.valueOf(TimeUnit.SECONDS.convert(expire, timeUnit));
+        String expireTime = String.valueOf(TimeUnit.SECONDS.convert(timeout, timeUnit));
         Long incr = getStringRedisTemplate().execute(redisScript, Collections.singletonList(key), expireTime);
         return incr;
     }
@@ -248,17 +277,18 @@ public class RedisHelper {
 
     // ======================================== 分布式锁 ==================================================
     public static boolean lock(String key, String unionId) {
-        return lock(key, unionId, 60);
+        return lock(key, unionId, 60, TimeUnit.SECONDS);
     }
-    public static boolean lock(String key, String unionId, int expireSeconds) {
-        Boolean success = getStringRedisTemplate().opsForValue().setIfAbsent(key, unionId, expireSeconds, TimeUnit.SECONDS);
-        logger.debug("获取 Redis 锁, key:{}, unionId:{}, expireSeconds:{}, 结果:{}", key, unionId, expireSeconds, success);
+    public static boolean lock(String key, String unionId, long timeout, TimeUnit unit) {
+        Boolean success = getStringRedisTemplate().opsForValue().setIfAbsent(key, unionId, timeout, unit);
+        logger.debug("获取 Redis 锁, key:{}, unionId:{}, timeout:{}, unit:{}, 结果:{}", key, unionId, timeout, unit, success);
         return success != null && success;
     }
     public static boolean lockBlock(String key, String unionId) {
-        return lockBlock(key, unionId, Long.MAX_VALUE);
+        return lockBlock(key, unionId, Long.MAX_VALUE, TimeUnit.MILLISECONDS);
     }
-    public static boolean lockBlock(String key, String unionId, long blockTime) {
+    public static boolean lockBlock(String key, String unionId, long timeout, TimeUnit unit) {
+        long blockTime = unit.toMillis(timeout);
         while (blockTime > 0) {
             if(lock(key, unionId)) {
                 return true;
