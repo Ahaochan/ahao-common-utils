@@ -1,7 +1,6 @@
 package com.ahao.util.spring.redis;
 
 import com.ahao.util.commons.io.JSONHelper;
-import com.ahao.util.commons.lang.reflect.ReflectHelper;
 import com.ahao.util.spring.SpringContextHolder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.Logger;
@@ -154,8 +153,8 @@ public class RedisHelper {
     @Deprecated
     public static Boolean setNxOld(String key, String value, long timeout, TimeUnit unit) {
         StringRedisTemplate redisTemplate = getStringRedisTemplate();
-        byte[] rawKey = ReflectHelper.executeMethod(redisTemplate, "rawKey", key);
-        byte[] rawValue = ReflectHelper.executeMethod(redisTemplate, "rawValue", value);
+        byte[] rawKey = ((RedisSerializer) redisTemplate.getKeySerializer()).serialize(key);
+        byte[] rawValue = ((RedisSerializer) redisTemplate.getValueSerializer()).serialize(value);
         Expiration expiration = Expiration.from(timeout, unit);
         return redisTemplate.execute((connection) ->
             connection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent()), true);
@@ -163,8 +162,8 @@ public class RedisHelper {
     @Deprecated
     public static Boolean setNxOld(String key, Object value, long timeout, TimeUnit unit) {
         RedisTemplate<String, Object> redisTemplate = getRedisTemplate();
-        byte[] rawKey = ReflectHelper.executeMethod(redisTemplate, "rawKey", key);
-        byte[] rawValue = ReflectHelper.executeMethod(redisTemplate, "rawValue", value);
+        byte[] rawKey = ((RedisSerializer) redisTemplate.getKeySerializer()).serialize(key);
+        byte[] rawValue = ((RedisSerializer) redisTemplate.getValueSerializer()).serialize(value);
         Expiration expiration = Expiration.from(timeout, unit);
         return redisTemplate.execute((connection) ->
             connection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent()), true);
@@ -208,7 +207,7 @@ public class RedisHelper {
                 consumer.accept(key);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("scan Redis 失败, pattern:{}", pattern, e);
         }
     }
     // ======================================== string ==================================================
