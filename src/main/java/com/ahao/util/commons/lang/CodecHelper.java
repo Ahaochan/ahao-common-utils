@@ -2,9 +2,13 @@ package com.ahao.util.commons.lang;
 
 import com.ahao.util.commons.io.IOHelper;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -33,5 +37,16 @@ public class CodecHelper {
 
     public static String md5(String data){
         return DigestUtils.md5Hex(data.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static String hmacSha256(String key, String data) throws Exception {
+        String algorithm = "HmacSHA256";
+        Charset charset = StandardCharsets.UTF_8;
+
+        Mac HmacSHA256 = Mac.getInstance(algorithm);
+        SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(charset), algorithm);
+        HmacSHA256.init(secretKey);
+        String str = Hex.encodeHexString(HmacSHA256.doFinal(data.getBytes(charset)));
+        return str.toUpperCase();
     }
 }
