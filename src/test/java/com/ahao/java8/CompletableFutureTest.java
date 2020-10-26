@@ -32,8 +32,8 @@ public class CompletableFutureTest {
         // CompletableFuture.completedFuture(msg);
         CompletableFuture<String> cf = CompletableFuture.supplyAsync(() -> msg, executor)
             .thenApplyAsync(String::toUpperCase, executor);
-        Assertions.assertTrue(cf.isDone());
-        String value = cf.getNow(defaultValue);
+        Assertions.assertNull(cf.getNow(defaultValue));
+        String value = cf.get();
         System.out.println("CompletableFuture 处理完毕: " + value);
         Assertions.assertEquals(msg.toUpperCase(), value);
     }
