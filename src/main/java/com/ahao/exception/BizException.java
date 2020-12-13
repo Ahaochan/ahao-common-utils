@@ -1,5 +1,7 @@
 package com.ahao.exception;
 
+import org.springframework.http.HttpStatus;
+
 /**
  * fillInStackTrace 方法是经过 synchronized 关键字修饰的.
  * 将 writableStackTrace 置为 false, 不打印异常堆栈.
@@ -7,6 +9,10 @@ package com.ahao.exception;
  */
 public class BizException extends RuntimeException {
     public static final boolean writableStackTrace = false;
+
+    private Integer code;
+
+    private String message;
 
     public BizException() {
         super(null, null, true, writableStackTrace);
@@ -26,5 +32,21 @@ public class BizException extends RuntimeException {
 
     public BizException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
+    }
+
+    public static BizException create(HttpStatus status, String message) {
+        BizException exception = new BizException(message);
+        exception.code = status.value();
+        exception.message = message;
+        return exception;
+    }
+
+    public Integer getCode() {
+        return code;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
     }
 }
