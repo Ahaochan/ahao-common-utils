@@ -1,6 +1,7 @@
 package com.ahao.mq.rabbit;
 
 import com.ahao.mq.rabbit.convert.JsonMessageConverter;
+import com.ahao.mq.rabbit.interceptor.LogRabbitMessagePostProcessor;
 import com.ahao.mq.rabbit.processor.RabbitBeanPostProcessor;
 import com.ahao.mq.rabbit.processor.RabbitCollector;
 import com.ahao.util.spring.mq.RabbitMQHelper;
@@ -82,5 +83,15 @@ public class RabbitAutoConfig {
     public RabbitBeanPostProcessor rabbitBeanPostProcessor(RabbitCollector collector) {
         RabbitBeanPostProcessor rabbitBeanPostProcessor = new RabbitBeanPostProcessor(collector);
         return rabbitBeanPostProcessor;
+    }
+
+    @Bean
+    public LogRabbitMessagePostProcessor.LogSend logSend() {
+        return new LogRabbitMessagePostProcessor.LogSend();
+    }
+
+    @Bean
+    public LogRabbitMessagePostProcessor.LogReceive logReceive() {
+        return new LogRabbitMessagePostProcessor.LogReceive();
     }
 }
