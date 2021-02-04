@@ -3,6 +3,7 @@ package com.ahao.transmit;
 import com.ahao.transmit.filter.TransmitFilter;
 import com.ahao.transmit.interceptor.TransmitClientHttpRequestInterceptor;
 import com.ahao.transmit.interceptor.TransmitFeignRequestInterceptor;
+import com.ahao.transmit.interceptor.TransmitKafkaProducerInterceptor;
 import com.ahao.transmit.interceptor.TransmitRabbitMessagePostProcessor;
 import com.ahao.transmit.properties.TransmitProperties;
 import feign.Feign;
@@ -15,6 +16,7 @@ import org.springframework.cloud.client.loadbalancer.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -80,6 +82,16 @@ public class TransmitterAutoConfig {
         @ConditionalOnMissingBean
         public TransmitRabbitMessagePostProcessor.After transmitRabbitAfterMessagePostProcessor(TransmitProperties properties) {
             return new TransmitRabbitMessagePostProcessor.After(properties);
+        }
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass(KafkaTemplate.class)
+    public static class TransmitKafkaConfig {
+        @Bean
+        @ConditionalOnMissingBean
+        public TransmitKafkaProducerInterceptor transmitKafkaProducerInterceptor(TransmitProperties properties) {
+            return new TransmitKafkaProducerInterceptor(properties);
         }
     }
 }
