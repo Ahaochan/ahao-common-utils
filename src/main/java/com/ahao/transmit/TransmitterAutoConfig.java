@@ -28,8 +28,8 @@ import java.util.List;
 public class TransmitterAutoConfig {
 
     @Configuration(proxyBeanMethods = false)
-    @ConditionalOnWebApplication
-    public static class FilterConfig {
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+    public static class ServletFilterConfig {
         @Bean
         @ConditionalOnMissingFilterBean(TransmitFilter.class)
         public FilterRegistrationBean<TransmitFilter> transmitFilter(TransmitProperties properties) {
