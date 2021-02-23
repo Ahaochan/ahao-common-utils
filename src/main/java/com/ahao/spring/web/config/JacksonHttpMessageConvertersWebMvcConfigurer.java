@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnWebApplication
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class JacksonHttpMessageConvertersWebMvcConfigurer implements WebMvcConfigurer {
 
     /**
