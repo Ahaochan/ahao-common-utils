@@ -9,6 +9,7 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by Ahaochan on 2017/8/14.
@@ -20,7 +21,7 @@ public class IOHelper {
 
     public static String toString(InputStream inputStream) {
         try {
-            return IOUtils.toString(inputStream, "UTF-8");
+            return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
         } catch (IOException e) {
             logger.warn("InputStream转换String时发生IO异常:", e);
         }
