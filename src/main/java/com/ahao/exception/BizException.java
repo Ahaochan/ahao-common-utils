@@ -35,8 +35,12 @@ public class BizException extends RuntimeException {
     }
 
     public static BizException create(HttpStatus status, String message) {
+        return BizException.create(status.value(), message);
+    }
+
+    public static BizException create(int code, String message) {
         BizException exception = new BizException(message);
-        exception.code = status.value();
+        exception.code = code;
         exception.message = message;
         return exception;
     }
