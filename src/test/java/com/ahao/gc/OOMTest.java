@@ -1,4 +1,4 @@
-package com.ahao.error;
+package com.ahao.gc;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
