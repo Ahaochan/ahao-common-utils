@@ -2,12 +2,20 @@ package com.ahao.gc;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.MethodInterceptor;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OOMTest {
+    static class MyClass {
+        public String toUpperCase(String str) {
+            return str.toUpperCase();
+        }
+    }
+
     /**
      * -Xms20m -Xmx20m -XX:+HeapDumpOnOutOfMemoryError
      */
@@ -39,6 +47,24 @@ public class OOMTest {
         List<String> list = new ArrayList<>();
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
             list.add(("测试" + i).intern());
+        }
+    }
+
+    /**
+     * -XX:MetaspaceSize=100m -XX:MaxMetaspaceSize=100m
+     */
+    @Test
+    @Disabled("配置JVM参数后测试")
+    public void metadataOOM() {
+        int count = 0;
+        while (count++ < 100000) {
+            Enhancer enhancer = new Enhancer();
+            enhancer.setSuperclass(MyClass.class);
+            enhancer.setUseCache(false);
+            enhancer.setCallback((MethodInterceptor) (obj, m, a, proxy) -> proxy.invokeSuper(obj, a));
+            MyClass proxy = (MyClass) enhancer.create();
+
+            System.out.println("创建" + count + "个" + proxy.getClass().getSimpleName() + "类");
         }
     }
 }
