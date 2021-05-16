@@ -17,6 +17,6 @@
 本项目`ahao-common-utils`是一个通用工具类集合.
 
 提供了部分封装了常用框架的代码.
-1. [`ShiroHelper`](./src/main/java/com/ahao/util/shiro/ShiroHelper.java): `Shiro`常用代码
-2. [`RedisHelper`](./src/main/java/com/ahao/util/spring/redis/RedisHelper.java): 基于`spring`的`Redis`工具类, 尽可能还原命令行的调用方式.
+1. [`ShiroHelper`](src/main/java/moe/ahao/util/shiro/ShiroHelper.java): `Shiro`常用代码
+2. [`RedisHelper`](src/main/java/moe/ahao/util/spring/redis/RedisHelper.java): 基于`spring`的`Redis`工具类, 尽可能还原命令行的调用方式.
 3. 其他常用代码

@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <version>1.0.0</version>
 
-    <groupId>com.ahao</groupId>
+    <groupId>moe.ahao</groupId>
     <artifactId>ahao-common-utils</artifactId>
     <name>ahao-common-utils</name>
     <packaging>jar</packaging>
@@ -69,7 +69,7 @@
         <dependencies>
             <!--======================================================= 自定义模块 =======================================================-->
             <dependency>
-                <groupId>com.ahao</groupId>
+                <groupId>moe.ahao</groupId>
                 <artifactId>ahao-common-utils</artifactId>
                 <version>1.0.0</version>
             </dependency>
