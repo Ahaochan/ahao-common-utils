@@ -135,6 +135,21 @@ public class GCTest {
      * -XX:NewSize=10m -XX:MaxNewSize=10m -XX:InitialHeapSize=20m -XX:MaxHeapSize=20m
      * -XX:SurvivorRatio=8 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
      * -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:gc.log
+     * -XX:PretenureSizeThreshold=1M
+     */
+    @Test
+    @Disabled("配置JVM参数后测试, 超大对象进入老年代示例")
+    public void PretenureSizeThreshold() {
+        byte[] array1 = new byte[2 * 1024 * 1024];
+        array1 = new byte[512 * 1024];
+        array1 = new byte[512 * 1024];
+        // 新生代: 1M+512K/10M, E区: 1M+512K/8M, 老年代2M/10M
+    }
+
+    /**
+     * -XX:NewSize=10m -XX:MaxNewSize=10m -XX:InitialHeapSize=20m -XX:MaxHeapSize=20m
+     * -XX:SurvivorRatio=8 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
+     * -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:gc.log
      */
     public void fullGc() {
         byte[] array1 = new byte[4 * 1024 * 1024];
