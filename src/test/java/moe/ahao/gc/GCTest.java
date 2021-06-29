@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class GCTest {
     /**
      * -XX:NewSize=5m -XX:MaxNewSize=5m -XX:InitialHeapSize=10m -XX:MaxHeapSize=10m
-     * -XX:SurvivorRatio=8 -XX:PretenureSizeThreshold=10m -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
+     * -XX:SurvivorRatio=8 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
      * -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:gc.log
      */
     @Test
@@ -42,9 +42,8 @@ public class GCTest {
 
     /**
      * -XX:NewSize=10m -XX:MaxNewSize=10m -XX:InitialHeapSize=20m -XX:MaxHeapSize=20m
-     * -XX:SurvivorRatio=8 -XX:PretenureSizeThreshold=10m -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
+     * -XX:SurvivorRatio=8 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
      * -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:gc.log
-     * -XX:MaxTenuringThreshold=15
      */
     @Test
     @Disabled("配置JVM参数后测试, 动态年龄进入老年代示例")
@@ -74,7 +73,7 @@ public class GCTest {
 
     /**
      * -XX:NewSize=10m -XX:MaxNewSize=10m -XX:InitialHeapSize=20m -XX:MaxHeapSize=20m
-     * -XX:SurvivorRatio=6 -XX:PretenureSizeThreshold=10m -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
+     * -XX:SurvivorRatio=6 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
      * -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:gc.log
      * -XX:MaxTenuringThreshold=2
      */
@@ -111,7 +110,7 @@ public class GCTest {
 
     /**
      * -XX:NewSize=10m -XX:MaxNewSize=10m -XX:InitialHeapSize=20m -XX:MaxHeapSize=20m
-     * -XX:SurvivorRatio=8 -XX:PretenureSizeThreshold=3m -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
+     * -XX:SurvivorRatio=8 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
      * -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:gc.log
      * -XX:MaxTenuringThreshold=15
      */
@@ -134,9 +133,8 @@ public class GCTest {
 
     /**
      * -XX:NewSize=10m -XX:MaxNewSize=10m -XX:InitialHeapSize=20m -XX:MaxHeapSize=20m
-     * -XX:SurvivorRatio=8 -XX:PretenureSizeThreshold=3m -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
+     * -XX:SurvivorRatio=8 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
      * -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:gc.log
-     * -XX:MaxTenuringThreshold=15
      */
     public void fullGc() {
         byte[] array1 = new byte[4 * 1024 * 1024];
