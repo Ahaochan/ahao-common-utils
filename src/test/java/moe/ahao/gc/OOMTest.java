@@ -31,11 +31,20 @@ public class OOMTest {
 
     /**
      * -Xss128k
+     * Xss最小108K, Hotspot因为无法动态扩展栈内存大小, 所以不会抛出OOM, 只会抛出StackOverflowError
      */
     @Test
     @Disabled("配置JVM参数后测试")
     public void stackOOM() {
-        stackOOM();
+        stackOOM(0L);
+    }
+    public void stackOOM(long i) {
+        try {
+            stackOOM(i+1);
+        } catch (Throwable e) {
+            System.out.println(e.getClass().getSimpleName() + ", 深度:" + i);
+            e.printStackTrace();
+        }
     }
 
     /**
