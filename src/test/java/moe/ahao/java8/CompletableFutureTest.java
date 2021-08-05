@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public class CompletableFutureTest {
@@ -25,7 +26,24 @@ public class CompletableFutureTest {
     }
 
     @Test
-    public void test1() throws Exception {
+    public void newCompletableFuture() throws Exception {
+        String msg = "hello world";
+
+        CompletableFuture<String> cf = new CompletableFuture<>();
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                cf.complete(msg.toUpperCase()); // 异步设置值
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+        String value = cf.get(5, TimeUnit.SECONDS); // 同步阻塞
+        Assertions.assertEquals(msg.toUpperCase(), value);
+    }
+
+    @Test
+    public void supplyAsync() throws Exception {
         String msg = "hello world";
         String defaultValue = null;
 
