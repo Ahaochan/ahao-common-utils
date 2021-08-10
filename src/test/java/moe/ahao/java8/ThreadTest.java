@@ -1,9 +1,12 @@
 package moe.ahao.java8;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ThreadTest {
@@ -62,5 +65,22 @@ public class ThreadTest {
 
         while (number.number < 100) {
         }
+    }
+
+    @Test
+    public void lockSupport() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        Thread thread = new Thread(() -> {
+            LockSupport.park();
+            latch.countDown();
+            System.out.println(Thread.currentThread().getName() + "被唤醒");
+        });
+        thread.start();
+
+        Thread.sleep(1000);
+        Assertions.assertEquals(1, latch.getCount());
+        LockSupport.unpark(thread);
+        Assertions.assertEquals(0, latch.getCount());
     }
 }
