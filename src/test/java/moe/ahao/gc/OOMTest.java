@@ -8,6 +8,7 @@ import org.springframework.cglib.proxy.MethodInterceptor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class OOMTest {
     static class MyClass {
@@ -44,6 +45,25 @@ public class OOMTest {
         } catch (Throwable e) {
             System.out.println(e.getClass().getSimpleName() + ", 深度:" + i);
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * -Xss128k
+     * java.lang.OutOfMemoryError: unable to create new native thread
+     */
+    @Test
+    @Disabled("配置JVM参数后测试")
+    public void threadOOM() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        while (true) {
+            new Thread(() -> {
+                try {
+                    latch.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
         }
     }
 
