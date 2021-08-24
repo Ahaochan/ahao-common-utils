@@ -4,16 +4,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 public class CollectorsTest {
     private int size = 100000;
     private List<Integer> list;
+
     @BeforeEach
     public void beforeEach() {
         list = new ArrayList<>(size);
@@ -42,6 +40,29 @@ public class CollectorsTest {
     }
 
     @Test
+    public void toMapBug() {
+        // https://bugs.openjdk.java.net/browse/JDK-8148463
+        Map<String, String> m = new HashMap<>();
+        m.put("A", "a");
+        m.put("B", "b");
+        m.put("C", "c");
+        Map<String, String> map1 = m.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Assertions.assertEquals(m.size(), map1.size());
+
+        // 1. toMap的value不能为null
+        m.put("D", null);
+        Assertions.assertThrows(NullPointerException.class, () ->
+                m.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+            , "toMap的value不能为null");
+        m.remove("D");
+
+        // 2. toMap的key可以为null
+        m.put(null, "e");
+        Map<String, String> map2 = m.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Assertions.assertEquals("e", map2.get(null));
+    }
+
+    @Test
     public void counting() {
         // Long count = list.stream().map(i -> "name" + i).collect(Collectors.counting());
         Long count1 = list.stream().map(i -> "name" + i).count();
@@ -60,6 +81,14 @@ public class CollectorsTest {
         Assertions.assertEquals(num, map1.size());
         Assertions.assertEquals(num, map2.size());
         System.out.println(map1);
+    }
+
+    @Test
+    public void groupingByBug() {
+        int num = 3;
+        Assertions.assertThrows(NullPointerException.class, () ->
+                list.stream().collect(Collectors.groupingBy(i -> i % num == 0 ? null : i % num))
+            , "groupingBy的key不能为null");
     }
 
     @Test
