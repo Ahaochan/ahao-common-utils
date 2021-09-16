@@ -159,7 +159,7 @@ public class GCTest {
      */
     @Test
     @Disabled("配置JVM参数后测试, YoungGC后再FullGC的测试用例")
-    public void YoungGcBeforeFullGc() {
+    public void youngGcBeforeFullGc() {
         byte[] alive = new byte[2 * 1024 * 1024];
         byte[] array1 = new byte[50 * 1024 * 1024];
         array1 = null;
@@ -187,11 +187,55 @@ public class GCTest {
         // 新生代: 50M+2M/100M, E区: 50M+2M/80M, 老年代: 60M/100M
 
         // 老年代剩余连续内存40M, 新生代所有对象总大小50M+2M, 触发分配担保
-        // 老年代剩余连续内存40M, 历次新生代存活对象总大小2M, 触发分配担保
+        // 老年代剩余连续内存40M, 历次新生代存活对象总大小2M, 直接进行YoungGC
         // 第1次YoungGC, array1和alive回收不掉, 存活对象52M大于S区大小10M, 存活对象52M大于老年代剩余大小40M, 分配担保失败, 触发FullGC
         // 第1次FullGC, !!!所有存活对象全部进入老年代!!! !!!所有存活对象全部进入老年代!!! !!!所有存活对象全部进入老年代!!!
         // 新生代: 0M/100M, E区: 0M/80M, 老年代: 50M+2M/100M
         byte[] array2 = new byte[30 * 1024 * 1024];
         // 新生代: 30M/100M, E区: 30M/80M, 老年代: 50M+2M/100M
+    }
+
+    /**
+     * -XX:NewSize=100m -XX:MaxNewSize=100m -XX:InitialHeapSize=200m -XX:MaxHeapSize=200m
+     * -XX:SurvivorRatio=8 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
+     * -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:gc.log
+     * -XX:PretenureSizeThreshold=80M
+     */
+    @Test
+    @Disabled("配置JVM参数后测试, 分配担保失败, 提前进行FullGC")
+    public void promotionFailed() {
+        byte[] alive = new byte[4 * 1024 * 1024];
+        byte[] array1 = new byte[70 * 1024 * 1024];
+        array1 = null;
+        // 新生代: 70M+4M/100M, E区: 70M+4M/80M
+
+        // 第1次YoungGC
+        // 新生代: 4M/100M, E区: 4M/80M
+        array1 = new byte[70 * 1024 * 1024];
+        array1 = null;
+        // 新生代: 70M+4M/100M, E区: 70M+4M/80M
+
+        // 第2次YoungGC
+        // 新生代: 4M/100M, E区: 4M/80M
+        array1 = new byte[70 * 1024 * 1024];
+        array1 = null;
+        // 新生代: 70M+4M/100M, E区: 70M+4M/80M
+
+        // 第3次YoungGC
+        // 新生代: 4M/100M, E区: 4M/80M
+        array1 = new byte[60 * 1024 * 1024];
+        array1 = new byte[10 * 1024 * 1024];
+        // 新生代: 70M+4M/100M, E区: 70M+4M/80M
+
+        byte[] big = new byte[97 * 1024 * 1024];
+        big = null;
+        // 新生代: 70M+4M/100M, E区: 70M+4M/80M, 老年代: 97M/100M
+
+        // 老年代剩余连续内存3M, 新生代所有对象总大小70M+4M, 触发分配担保
+        // 老年代剩余连续内存3M, 历次新生代存活对象总大小4M, 提前触发FullGC
+        // 第1次FullGC, !!!所有存活对象全部进入老年代!!! !!!所有存活对象全部进入老年代!!! !!!所有存活对象全部进入老年代!!!
+        // 新生代: 0M/100M, E区: 0M/80M, 老年代: 10M+4M/100M
+        byte[] array2 = new byte[30 * 1024 * 1024];
+        // 新生代: 30M/100M, E区: 30M/80M, 老年代: 10M+4M/100M
     }
 }
