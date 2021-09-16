@@ -152,27 +152,44 @@ public class GCTest {
     }
 
     /**
-     * -XX:NewSize=10m -XX:MaxNewSize=10m -XX:InitialHeapSize=20m -XX:MaxHeapSize=20m
+     * -XX:NewSize=100m -XX:MaxNewSize=100m -XX:InitialHeapSize=200m -XX:MaxHeapSize=200m
      * -XX:SurvivorRatio=8 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
      * -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:gc.log
+     * -XX:PretenureSizeThreshold=55M
      */
     public void fullGc() {
-        byte[] array1 = new byte[4 * 1024 * 1024];
+        byte[] alive = new byte[2 * 1024 * 1024];
+        byte[] array1 = new byte[50 * 1024 * 1024];
         array1 = null;
-        // 新生代: 512K/10M, E区: 512K/8M; 老年代: 4M/10M
-        byte[] array2 = new byte[2 * 1024 * 1024];
-        byte[] array3 = new byte[2 * 1024 * 1024];
-        byte[] array4 = new byte[2 * 1024 * 1024];
-        byte[] array5 = new byte[128 * 1024];
-        // 新生代: 6M+512K+128K/10M, E区: 6M+512K+128K/8M; 老年代: 4M/10M
-        // YoungGC回收不掉, S区也装不下这堆对象, 于是晋升老年代
-        // 新生代: 2M+512K+128K/10M, E区: 2M+512K+128K/8M; 老年代: 4M+2M+2M/10M
-        // 这个时候, 老年代也装不下了, 执行FullGC
-        // 新生代: 2M+512K+128K/10M, E区: 2M+512K+128K/8M; 老年代: 2M+2M/10M
-        // 老年代空出来了, 继续晋升老年代
-        // 新生代: 0M/10M, E区: 0M/8M; 老年代: 6M+512K+128K/10M
+        // 新生代: 50M+2M/100M, E区: 50M+2M/80M
 
-        byte[] array6 = new byte[2 * 1024 * 1024];
-        // 新生代: 2M/10M, E区: 2M/8M; 老年代: 6M+512K+128K/10M
+        // 第1次YoungGC
+        // 新生代: 2M/100M, E区: 2M/80M
+        array1 = new byte[50 * 1024 * 1024];
+        array1 = null;
+        // 新生代: 50M+2M/100M, E区: 50M+2M/80M
+
+        // 第2次YoungGC
+        // 新生代: 2M/100M, E区: 2M/80M
+        array1 = new byte[50 * 1024 * 1024];
+        array1 = null;
+        // 新生代: 50M+2M/100M, E区: 50M+2M/80M
+
+        // 第3次YoungGC
+        // 新生代: 2M/100M, E区: 2M/80M
+        array1 = new byte[50 * 1024 * 1024];
+        // 新生代: 50M+2M/100M, E区: 50M+2M/80M
+
+        byte[] big = new byte[60 * 1024 * 1024];
+        big = null;
+        // 新生代: 50M+2M/100M, E区: 50M+2M/80M, 老年代: 60M/100M
+
+        // 老年代剩余连续内存40M, 新生代所有对象总大小50M+2M, 触发分配担保
+        // 老年代剩余连续内存40M, 历次新生代存活对象总大小2M, 触发分配担保
+        // 第1次YoungGC, array1和alive回收不掉, 存活对象52M大于S区大小10M, 存活对象52M大于老年代剩余大小40M, 分配担保失败, 触发FullGC
+        // 第1次FullGC, !!!所有存活对象全部进入老年代!!! !!!所有存活对象全部进入老年代!!! !!!所有存活对象全部进入老年代!!!
+        // 新生代: 0M/100M, E区: 0M/80M, 老年代: 50M+2M/100M
+        byte[] array2 = new byte[30 * 1024 * 1024];
+        // 新生代: 30M/100M, E区: 30M/80M, 老年代: 50M+2M/100M
     }
 }
