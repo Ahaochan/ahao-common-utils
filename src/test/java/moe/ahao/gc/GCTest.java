@@ -157,7 +157,9 @@ public class GCTest {
      * -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:gc.log
      * -XX:PretenureSizeThreshold=55M
      */
-    public void fullGc() {
+    @Test
+    @Disabled("配置JVM参数后测试, YoungGC后再FullGC的测试用例")
+    public void YoungGcBeforeFullGc() {
         byte[] alive = new byte[2 * 1024 * 1024];
         byte[] array1 = new byte[50 * 1024 * 1024];
         array1 = null;
