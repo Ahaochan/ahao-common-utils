@@ -154,6 +154,11 @@
             <artifactId>poi-ooxml</artifactId>
             <version>4.1.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>4.1.1</version>
+        </dependency>
         <!--======================================================= Apache工具类 =======================================================-->
 
         <!--======================================================= 其他工具类 =======================================================-->
