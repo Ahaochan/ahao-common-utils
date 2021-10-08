@@ -8,18 +8,19 @@ import moe.ahao.transmit.interceptor.TransmitKafkaProducerInterceptor;
 import moe.ahao.transmit.interceptor.TransmitRabbitMessagePostProcessor;
 import moe.ahao.transmit.properties.TransmitProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.autoconfigure.web.servlet.ConditionalOnMissingFilterBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.cloud.client.loadbalancer.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration(proxyBeanMethods = false)
@@ -41,13 +42,19 @@ public class TransmitterAutoConfig {
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnBean(RestTemplate.class)
     public static class TransmitRestTemplateConfig {
+
+        @Autowired(required = false)
+        private List<RestTemplate> restTemplates = Collections.emptyList();
+
         @Bean
         @ConditionalOnMissingBean
-        public RestTemplateCustomizer restTemplateCustomizer(TransmitClientHttpRequestInterceptor interceptor) {
-            return restTemplate -> {
-                List<ClientHttpRequestInterceptor> list = new ArrayList<>(restTemplate.getInterceptors());
-                list.add(interceptor);
-                restTemplate.setInterceptors(list);
+        public SmartInitializingSingleton transmitClientHttpRequestInterceptorInit(TransmitClientHttpRequestInterceptor interceptor) {
+            return () -> {
+                for (RestTemplate restTemplate : restTemplates) {
+                    List<ClientHttpRequestInterceptor> interceptors = restTemplate.getInterceptors();
+                    interceptors.add(interceptor);
+                    restTemplate.setInterceptors(interceptors);
+                }
             };
         }
 
