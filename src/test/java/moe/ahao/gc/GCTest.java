@@ -19,7 +19,7 @@ public class GCTest {
         // 新生代: 60M/100M, E区: 60M/80M
 
         // 第1次YoungGC
-        // 新生代: 0M/50M, E区: 0M/40M
+        // 新生代: 0M/100M, E区: 0M/80M
         byte[] array2 = new byte[20 * 1024 * 1024];
         // 新生代: 20M/100M, E区: 20M/80M
 
