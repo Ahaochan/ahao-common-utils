@@ -221,6 +221,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!--======================================================= Spring Boot =======================================================-->
 
