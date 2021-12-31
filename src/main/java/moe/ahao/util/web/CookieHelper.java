@@ -26,6 +26,7 @@ public abstract class CookieHelper {
      * @param cookie Cookie
      */
     public static void setCookie(Cookie cookie, HttpServletResponse response) {
+        cookie.setSecure(true);
         response.addCookie(cookie);
     }
 
@@ -41,6 +42,7 @@ public abstract class CookieHelper {
 //        cookie.setDomain("");
         cookie.setPath("/");
         // 添加cookie
+        cookie.setSecure(true);
         response.addCookie(cookie);
     }
 
