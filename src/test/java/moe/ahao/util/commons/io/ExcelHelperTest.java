@@ -1,5 +1,6 @@
 package moe.ahao.util.commons.io;
 
+import moe.ahao.util.commons.lang.StringHelper;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.junit.jupiter.api.Assertions;
@@ -17,16 +18,21 @@ class ExcelHelperTest {
         // 1. 初始化数据
         int row = 10, col = 20;
         String[][] writeData = new String[row][col];
-        for(int i = 0; i < row; i++) {
+        for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
-                writeData[i][j] = "data["+i+"]["+j+"]";
+                writeData[i][j] = "data[" + i + "][" + j + "]";
             }
         }
 
         // 2. 写入Excel
         File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         File excelFile = new File(tmpDir, "test.xlsx");
-        ExcelHelper.writeSheet(writeData, excelFile);
+        ExcelHelper.writeSheet(writeData, excelFile, (row1, cells) -> {
+            for (int i = 0, colLen = cells.length; i < colLen; i++) {
+                Cell cell = row1.createCell(i, CellType.STRING);
+                cell.setCellValue(StringHelper.null2Empty(cells[i]));
+            }
+        });
         Assertions.assertAll("写入文件错误",
             () -> Assertions.assertTrue(excelFile.exists()),
             () -> Assertions.assertTrue(excelFile.isFile()),
@@ -35,7 +41,7 @@ class ExcelHelperTest {
 
         // 3. 读取Excel
         String[][] readData = ExcelHelper.readSheet(excelFile);
-        for(int i = 0, rowLen = readData.length; i < rowLen; i++) {
+        for (int i = 0, rowLen = readData.length; i < rowLen; i++) {
             for (int j = 0, colLen = readData[i].length; j < colLen; j++) {
                 Assertions.assertEquals(writeData[i][j], readData[i][j]);
             }
@@ -51,9 +57,9 @@ class ExcelHelperTest {
         File file = new ClassPathResource("excel/excel.xlsx").getFile();
         int sheetIndex = 0;
 
-        try (Workbook workbook = WorkbookFactory.create(file)){
+        try (Workbook workbook = WorkbookFactory.create(file)) {
             Sheet sheet = workbook.getSheetAt(sheetIndex);
-            if(sheet == null) {
+            if (sheet == null) {
                 Assertions.fail();
             }
 
@@ -83,7 +89,7 @@ class ExcelHelperTest {
                 Cell cell2 = row.getCell(2);
                 Assertions.assertAll("读取第0行第2列失败",
                     () -> Assertions.assertNull(ExcelHelper.getInteger(cell2)),
-                    () -> Assertions.assertEquals("测试数据",  ExcelHelper.getString(cell2)),
+                    () -> Assertions.assertEquals("测试数据", ExcelHelper.getString(cell2)),
                     () -> Assertions.assertNull(ExcelHelper.getDouble(cell2)),
                     () -> Assertions.assertNull(ExcelHelper.getDate(cell2, "yyyy-MM-dd"))
                 );
@@ -92,8 +98,8 @@ class ExcelHelperTest {
                 Date expect = DateUtils.parseDate("2019-01-01", "yyyy-MM-dd");
                 Assertions.assertAll("读取第0行第3列失败",
                     () -> Assertions.assertEquals(Integer.valueOf((int) expect.getTime()), ExcelHelper.getInteger(cell3)),
-                    () -> Assertions.assertEquals(String.valueOf(expect.getTime()),  ExcelHelper.getString(cell3)),
-                    () -> Assertions.assertEquals(Double.valueOf((double) expect.getTime()),  ExcelHelper.getDouble(cell3)),
+                    () -> Assertions.assertEquals(String.valueOf(expect.getTime()), ExcelHelper.getString(cell3)),
+                    () -> Assertions.assertEquals(Double.valueOf((double) expect.getTime()), ExcelHelper.getDouble(cell3)),
                     () -> Assertions.assertEquals(expect, ExcelHelper.getDate(cell3, "yyyy-MM-dd"))
                 );
             }
