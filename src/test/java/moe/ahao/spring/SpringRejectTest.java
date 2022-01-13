@@ -17,12 +17,24 @@ public class SpringRejectTest {
     static class AutowireBean {
         @Autowired
         public AhaoBean ahaoBean;
+        @Autowired
+        public void injectMethod(AhaoBean ahaoBean) {
+            System.out.println("执行:" + ahaoBean);
+        }
+        public void injectMethodParam(@Autowired AhaoBean ahaoBean) {
+            System.out.println("不执行:" + ahaoBean);
+        }
     }
     static class ResourceBean {
         @Resource
         public AhaoBean a;
         @Resource
         public AhaoBean b;
+        // 只能修饰在只有一个参数的方法上
+        @Resource
+        public void injectMethod(AhaoBean a) {
+            System.out.println("执行:" + a);
+        }
     }
 
     @Test
@@ -48,5 +60,4 @@ public class SpringRejectTest {
         Assertions.assertEquals("a", bean.a.name);
         Assertions.assertEquals("b", bean.b.name);
     }
-
 }
