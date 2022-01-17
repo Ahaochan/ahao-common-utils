@@ -7,14 +7,14 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import javax.annotation.Resource;
 
-public class SpringRejectTest {
-    static class AhaoBean {
+class SpringInjectTest {
+    private static class AhaoBean {
         String name;
         public AhaoBean(String name) {
             this.name = name;
         }
     }
-    static class AutowireBean {
+    private static class AutowireBean {
         @Autowired
         public AhaoBean ahaoBean;
         @Autowired
@@ -25,7 +25,7 @@ public class SpringRejectTest {
             System.out.println("不执行:" + ahaoBean);
         }
     }
-    static class ResourceBean {
+    private static class ResourceBean {
         @Resource
         public AhaoBean a;
         @Resource
@@ -38,7 +38,7 @@ public class SpringRejectTest {
     }
 
     @Test
-    public void autowire() {
+    void autowire() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.registerBean(AhaoBean.class.getSimpleName(), AhaoBean.class, "default");
         context.registerBean(AutowireBean.class);
@@ -49,7 +49,7 @@ public class SpringRejectTest {
     }
 
     @Test
-    public void resource() {
+    void resource() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.registerBean("a", AhaoBean.class, "a");
         context.registerBean("b", AhaoBean.class, "b");

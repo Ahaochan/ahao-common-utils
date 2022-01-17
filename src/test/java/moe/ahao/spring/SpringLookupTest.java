@@ -17,7 +17,7 @@ class SpringLookupTest {
     static class PrototypeBean {
     }
     @Component
-    static class AutowiredInjectBean {
+    private static class AutowiredInjectBean {
         @Autowired
         PrototypeBean prototypeBean;
         public void print() {
@@ -30,7 +30,7 @@ class SpringLookupTest {
         }
     }
     @Component
-    static class ApplicationContextInjectBean implements ApplicationContextAware {
+    private static class ApplicationContextInjectBean implements ApplicationContextAware {
         private ApplicationContext context;
         @Override
         public void setApplicationContext(ApplicationContext context) throws BeansException {

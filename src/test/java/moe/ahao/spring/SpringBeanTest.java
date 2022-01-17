@@ -5,18 +5,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.UnsatisfiedDependencyException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-public class SpringBeanTest {
+class SpringBeanTest {
     static class AhaoBean {}
     class NoSuchBean {}
     @Test
-    public void registerBean() {
+    void registerBean() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.registerBean(AhaoBean.class);
         context.refresh();
         Assertions.assertNotNull(context.getBean(AhaoBean.class));
     }
     @Test
-    public void noSuchBean() {
+    void noSuchBean() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.registerBean(NoSuchBean.class);
         // context.refresh();
