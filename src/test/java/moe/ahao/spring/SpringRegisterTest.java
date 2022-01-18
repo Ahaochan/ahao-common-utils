@@ -58,7 +58,7 @@ class SpringRegisterTest {
     void factoryBean() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 
-        context.register(AhaoFactoryBean.class);
+        context.registerBean("ahaoFactoryBean", AhaoFactoryBean.class);
 
         GenericBeanDefinition beanDefinition = new GenericBeanDefinition();
         beanDefinition.setBeanClass(A.class);
