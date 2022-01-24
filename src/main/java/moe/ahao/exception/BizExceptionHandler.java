@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestControllerAdvice
 @ConditionalOnClass(DispatcherServlet.class)
@@ -18,10 +19,10 @@ public class BizExceptionHandler {
     public static final Logger logger = LoggerFactory.getLogger(BizExceptionHandler.class);
 
     @ExceptionHandler(BizException.class)
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public AjaxDTO methodNotAllowed(HttpServletRequest request, BizException e) {
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public AjaxDTO bizException(HttpServletRequest request, HttpServletResponse response, BizException e) {
         String message = String.format("发生业务异常: %s", e.getMessage());
-        logger.error(message);
+        logger.warn(message);
         return AjaxDTO.failure(message);
     }
 }
