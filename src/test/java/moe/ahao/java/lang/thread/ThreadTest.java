@@ -1,4 +1,4 @@
-package moe.ahao.java;
+package moe.ahao.java.lang.thread;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
