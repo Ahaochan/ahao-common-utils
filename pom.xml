@@ -23,6 +23,8 @@
         <spring.cloud.version>Hoxton.SR12</spring.cloud.version>
         <spring.cloud.alibaba.version>2.2.7.RELEASE</spring.cloud.alibaba.version>
         <spring.swagger.version>3.0.0</spring.swagger.version>
+        <spring.swagger.bootstrap.version>1.9.6</spring.swagger.bootstrap.version>
+        <spring.dubbo.version>2.7.8</spring.dubbo.version>
 
         <apache.commons.beanutils.version>1.9.4</apache.commons.beanutils.version>
         <apache.commons.collections4.version>4.4</apache.commons.collections4.version>
@@ -41,7 +43,10 @@
         <mybatis.version>3.5.2</mybatis.version>
         <mybatis.generator.version>1.4.0</mybatis.generator.version>
         <mybatis.spring.boot.version>2.1.1</mybatis.spring.boot.version>
-        <mybatis.plus.version>3.3.0</mybatis.plus.version>
+        <mybatis.plus.version>3.4.1</mybatis.plus.version>
+
+        <redission.version>3.15.5</redission.version>
+        <embedded.redis.version>0.6</embedded.redis.version>
     </properties>
 
     <repositories>
@@ -190,6 +195,16 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -263,11 +278,6 @@
 
         <!--======================================================= 单元测试 =======================================================-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>test</scope>
@@ -275,6 +285,22 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.kstyrc</groupId>
+            <artifactId>embedded-redis</artifactId>
+            <version>${embedded.redis.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -382,6 +408,26 @@
                             </limits>
                         </rule>
                     </rules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
         </plugins>
