@@ -1,6 +1,6 @@
 package moe.ahao.tree;
 
-import com.mysql.cj.jdbc.Driver;
+import moe.ahao.transaction.DBConstant;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +10,6 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -18,42 +17,7 @@ import java.sql.Statement;
 import java.util.List;
 
 class TreeTest {
-    @ComponentScan("moe.ahao.tree")
-    @MapperScan("moe.ahao.tree")
-    static class TestConfig {
-        @Bean
-        public DataSource dataSource() {
-            // DriverManagerDataSource ds = new DriverManagerDataSource();
-            // ds.setDriverClassName(org.h2.Driver.class.getName());
-            // // ds.setPassword("123456");
-            // // ds.setUsername("root");
-            // ds.setUrl("jdbc:p6spy:h2:mem:db1;DB_CLOSE_DELAY=-1;MODE=MySQL;");
-
-            DriverManagerDataSource ds = new DriverManagerDataSource();
-            ds.setDriverClassName(Driver.class.getName());
-            ds.setPassword("root");
-            ds.setUsername("root");
-            ds.setUrl("jdbc:mysql://192.168.19.128:3306/ahaodb?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&tinyInt1isBit=false&rewriteBatchedStatements=true&useAffectedRows=true");
-            return ds;
-        }
-
-        @Bean
-        public SqlSessionFactory sqlSessionFactory() throws Exception {
-            SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-            factoryBean.setDataSource(dataSource());
-            return factoryBean.getObject();
-        }
-    }
-
-    interface TreeRepositoryImpl extends TreeRepository<TreeNode> {
-    }
-
-    static class TreeServiceImpl extends TreeService<TreeNode> {
-        public TreeServiceImpl(TreeRepository<TreeNode> treeRepository) {
-            super(treeRepository);
-        }
-    }
-
+    private TreeServiceImpl service;
     TreeTest() throws Exception {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(TestConfig.class);
 
@@ -74,8 +38,6 @@ class TreeTest {
         TreeRepositoryImpl mapper = context.getBean(TreeRepositoryImpl.class);
         service = new TreeServiceImpl(mapper);
     }
-
-    private TreeServiceImpl service;
 
     @BeforeEach
     void beforeEach() {
@@ -279,4 +241,30 @@ class TreeTest {
         }
     }
 
+    @ComponentScan("moe.ahao.tree")
+    @MapperScan("moe.ahao.tree")
+    static class TestConfig {
+        @Bean
+        public DataSource dataSource() {
+            // DataSource dataSource = DBConstant.createH2DataSource();
+            DataSource dataSource = DBConstant.createMysqlDataSource("ahaodb");
+            return dataSource;
+        }
+
+        @Bean
+        public SqlSessionFactory sqlSessionFactory() throws Exception {
+            SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+            factoryBean.setDataSource(dataSource());
+            return factoryBean.getObject();
+        }
+    }
+
+    interface TreeRepositoryImpl extends TreeRepository<TreeNode> {
+    }
+
+    static class TreeServiceImpl extends TreeService<TreeNode> {
+        public TreeServiceImpl(TreeRepository<TreeNode> treeRepository) {
+            super(treeRepository);
+        }
+    }
 }

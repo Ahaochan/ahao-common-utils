@@ -78,9 +78,9 @@ public class ThreadTest {
         });
         thread.start();
 
-        Thread.sleep(1000);
         Assertions.assertEquals(1, latch.getCount());
         LockSupport.unpark(thread);
+        Thread.sleep(1); // 让出CPU时间片, 去执行thread线程内的代码
         Assertions.assertEquals(0, latch.getCount());
     }
 }
