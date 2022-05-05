@@ -1,4 +1,4 @@
-package moe.ahao.transaction.mybatis.entity;
+package moe.ahao.transaction.user.mybatis.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;

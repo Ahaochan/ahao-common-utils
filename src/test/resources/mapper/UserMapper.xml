@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="moe.ahao.transaction.mybatis.mapper.UserMapper">
+<mapper namespace="moe.ahao.transaction.user.mybatis.mapper.UserMapper">
 
-    <insert id="insertSQL" parameterType="moe.ahao.transaction.jpa.entity.User">
+    <insert id="insertSQL" parameterType="moe.ahao.transaction.user.mybatis.entity.User">
         insert into user(username, password) values(#{username}, #{password})
     </insert>
     <insert id="insertBatchSQL" parameterType="arraylist">

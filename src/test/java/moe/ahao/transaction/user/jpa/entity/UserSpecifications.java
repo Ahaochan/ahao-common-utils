@@ -1,4 +1,4 @@
-package moe.ahao.transaction.jpa.entity;
+package moe.ahao.transaction.user.jpa.entity;
 
 import org.springframework.data.jpa.domain.Specification;
 

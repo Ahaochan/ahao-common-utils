@@ -1,7 +1,7 @@
-package moe.ahao.transaction.jpa.repository;
+package moe.ahao.transaction.user.jpa.repository;
 
 
-import moe.ahao.transaction.jpa.entity.User;
+import moe.ahao.transaction.user.jpa.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

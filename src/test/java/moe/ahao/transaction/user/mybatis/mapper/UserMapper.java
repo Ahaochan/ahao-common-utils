@@ -1,7 +1,7 @@
-package moe.ahao.transaction.mybatis.mapper;
+package moe.ahao.transaction.user.mybatis.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import moe.ahao.transaction.mybatis.entity.User;
+import moe.ahao.transaction.user.mybatis.entity.User;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

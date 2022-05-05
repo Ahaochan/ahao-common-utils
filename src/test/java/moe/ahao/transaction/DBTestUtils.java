@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBTestUtils {
-    public static final String MYSQL_URL = "192.168.153.134:3306";
+    public static final String MYSQL_HOST = "192.168.19.128:3306";
     public static final String MYSQL_PARAM = "?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&tinyInt1isBit=false&rewriteBatchedStatements=true&useAffectedRows=true";
     public static final String MYSQL_ROOT = "root";
     public static final String MYSQL_PW = "root";
@@ -40,7 +40,12 @@ public class DBTestUtils {
         ds.setDriverClassName(Driver.class.getName());
         ds.setPassword(MYSQL_PW);
         ds.setUsername(MYSQL_ROOT);
-        ds.setUrl("jdbc:mysql://" + MYSQL_URL + "/" + database + MYSQL_PARAM);
+        ds.setUrl(DBTestUtils.getMysqlJdbcUrl(database));
         return ds;
+    }
+
+    public static String getMysqlJdbcUrl(String database) {
+        String jdbcUrl = "jdbc:mysql://" + MYSQL_HOST + "/" + (database != null ? database : "") + MYSQL_PARAM;
+        return jdbcUrl;
     }
 }

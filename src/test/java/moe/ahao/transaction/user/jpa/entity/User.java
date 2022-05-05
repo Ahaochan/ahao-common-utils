@@ -1,4 +1,4 @@
-package moe.ahao.transaction.jpa.entity;
+package moe.ahao.transaction.user.jpa.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
