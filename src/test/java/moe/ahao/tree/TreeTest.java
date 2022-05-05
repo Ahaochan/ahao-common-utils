@@ -1,6 +1,6 @@
 package moe.ahao.tree;
 
-import moe.ahao.transaction.DBConstant;
+import moe.ahao.transaction.DBTestUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -247,7 +247,7 @@ class TreeTest {
         @Bean
         public DataSource dataSource() {
             // DataSource dataSource = DBConstant.createH2DataSource();
-            DataSource dataSource = DBConstant.createMysqlDataSource("ahaodb");
+            DataSource dataSource = DBTestUtils.createMysqlDataSource("ahaodb");
             return dataSource;
         }
 

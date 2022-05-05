@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import moe.ahao.domain.entity.BaseDO;
-import moe.ahao.transaction.mybatis.enums.Sex;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -19,7 +18,7 @@ public class User extends BaseDO implements Serializable {
     private String email;
     private String password;
     private String salt;
-    private Sex sex;
+    private Integer sex;
 
     @TableField("is_locked")
     private Boolean locked;
