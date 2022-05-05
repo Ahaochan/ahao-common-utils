@@ -180,8 +180,8 @@ class NumberHelperTest {
         Assertions.assertAll("int <==> float",
             () -> Assertions.assertTrue(NumberHelper.equals((int) 1, (float) 1)),
             () -> Assertions.assertTrue(NumberHelper.equals((float) 1, (int) 1)),
-            () -> Assertions.assertFalse(NumberHelper.equals(Integer.MAX_VALUE,  (float) Integer.MAX_VALUE)), // TODO 比较错误
-            () -> Assertions.assertFalse(NumberHelper.equals((float) Integer.MAX_VALUE, Integer.MAX_VALUE)),  // TODO 比较错误
+            () -> Assertions.assertFalse(NumberHelper.equals(Integer.MAX_VALUE,  (float) Integer.MAX_VALUE)), // 浮点数强转会出现精度丢失
+            () -> Assertions.assertFalse(NumberHelper.equals((float) Integer.MAX_VALUE, Integer.MAX_VALUE)),  // 浮点数强转会出现精度丢失
             () -> Assertions.assertTrue(NumberHelper.equals((Integer.MAX_VALUE / 50),  (float) (Integer.MAX_VALUE / 50))),
             () -> Assertions.assertTrue(NumberHelper.equals((float) (Integer.MAX_VALUE / 50), (Integer.MAX_VALUE / 50))),
             () -> Assertions.assertTrue(NumberHelper.equals(Integer.MIN_VALUE, (float) Integer.MIN_VALUE)),
