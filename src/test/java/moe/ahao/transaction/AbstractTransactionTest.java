@@ -7,10 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 import static moe.ahao.transaction.bank.transfer.service.BankTransferAccountMybatisService.SELECT_SQL;
 
@@ -18,10 +15,13 @@ public abstract class AbstractTransactionTest {
     @BeforeEach
     public void beforeEach() throws Exception {
         String sql = FileUtils.readFileToString(new ClassPathResource("sql/bank_transfer.sql").getFile(), StandardCharsets.UTF_8);
-        try (Connection conn = DriverManager.getConnection(DBTestUtils.getMysqlJdbcUrl("ahaodb"), "root", "root");
+        try (Connection conn = this.getBeforeEachConnection();
              Statement s = conn.createStatement();) {
             s.execute(sql);
         }
+    }
+    protected Connection getBeforeEachConnection() throws SQLException {
+        return DriverManager.getConnection(DBTestUtils.getMysqlJdbcUrl("ahaodb"), "root", "root");
     }
 
     @Test
