@@ -25,28 +25,35 @@ public abstract class AbstractTransactionTest {
     }
 
     @Test
-    public void commit() throws Exception {
+    void commit() throws Exception {
         try {
-            this.execute(false);
+            this.doCommit();
         } catch (Exception e) {
             e.printStackTrace();
         }
         this.assertCommit();
     }
+    protected void doCommit() throws Exception {
+        this.execute(false);
+    }
 
     @Test
-    protected void rollback() throws Exception {
+    void rollback() throws Exception {
         try {
-            this.execute(true);
+            this.doRollback();
         } catch (Exception e) {
             e.printStackTrace();
         }
         this.assertRollback();
     }
+    protected void doRollback() throws Exception {
+        this.execute(true);
+    }
+    protected void execute(boolean rollback) throws Exception {
+        Assertions.fail("空实现");
+    }
 
-    protected abstract void execute(boolean rollback) throws Exception;
-
-    protected void assertCommit() throws Exception {
+    void assertCommit() throws Exception {
         try (Connection conn = DriverManager.getConnection(DBTestUtils.getMysqlJdbcUrl("ahaodb"), "root", "root");
              Statement s = conn.createStatement();
              ResultSet rs = s.executeQuery(SELECT_SQL);) {
@@ -60,7 +67,7 @@ public abstract class AbstractTransactionTest {
         }
     }
 
-    protected void assertRollback() throws Exception {
+    void assertRollback() throws Exception {
         try (Connection conn = DriverManager.getConnection(DBTestUtils.getMysqlJdbcUrl("ahaodb"), "root", "root");
              Statement s = conn.createStatement();
              ResultSet rs = s.executeQuery(SELECT_SQL);) {

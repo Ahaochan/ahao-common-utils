@@ -15,48 +15,72 @@ public class BankTransferAccountMybatisService extends ServiceImpl<BankTransferA
         if (BigDecimal.ZERO.compareTo(amount) > 0) {
             throw new IllegalArgumentException("金额为负数");
         }
-        this.baseMapper.updateAmountWhenIncrease(accountId, amount);
+        int count = this.baseMapper.updateAmountWhenIncrease(accountId, amount);
+        if(count <= 0) {
+            throw new IllegalStateException("更新失败");
+        }
     }
     public void decrease(Long accountId, BigDecimal amount) {
         if (BigDecimal.ZERO.compareTo(amount) > 0) {
             throw new IllegalArgumentException("金额为负数");
         }
-        this.baseMapper.updateAmountWhenDecrease(accountId, amount);
+        int count = this.baseMapper.updateAmountWhenDecrease(accountId, amount);
+        if(count <= 0) {
+            throw new IllegalStateException("更新失败");
+        }
     }
     public void increaseTry(Long accountId, BigDecimal amount) {
         if (BigDecimal.ZERO.compareTo(amount) > 0) {
             throw new IllegalArgumentException("金额为负数");
         }
-        this.baseMapper.updateAmountWhenIncreaseTry(accountId, amount);
+        int count = this.baseMapper.updateAmountWhenIncreaseTry(accountId, amount);
+        if(count <= 0) {
+            throw new IllegalStateException("更新失败");
+        }
     }
     public void increaseConfirm(Long accountId, BigDecimal amount) {
         if (BigDecimal.ZERO.compareTo(amount) > 0) {
             throw new IllegalArgumentException("金额为负数");
         }
-        this.baseMapper.updateAmountWhenIncreaseConfirm(accountId, amount);
+        int count = this.baseMapper.updateAmountWhenIncreaseConfirm(accountId, amount);
+        if(count <= 0) {
+            throw new IllegalStateException("更新失败");
+        }
     }
     public void increaseCancel(Long accountId, BigDecimal amount) {
         if (BigDecimal.ZERO.compareTo(amount) > 0) {
             throw new IllegalArgumentException("金额为负数");
         }
-        this.baseMapper.updateAmountWhenIncreaseCancel(accountId, amount);
+        int count = this.baseMapper.updateAmountWhenIncreaseCancel(accountId, amount);
+        if(count <= 0) {
+            throw new IllegalStateException("更新失败");
+        }
     }
     public void decreaseTry(Long accountId, BigDecimal amount) {
         if (BigDecimal.ZERO.compareTo(amount) > 0) {
             throw new IllegalArgumentException("金额为负数");
         }
-        this.baseMapper.updateAmountWhenDecreaseTry(accountId, amount);
+        int count = this.baseMapper.updateAmountWhenDecreaseTry(accountId, amount);
+        if(count <= 0) {
+            throw new IllegalStateException("更新失败");
+        }
     }
     public void decreaseConfirm(Long accountId, BigDecimal amount) {
         if (BigDecimal.ZERO.compareTo(amount) > 0) {
             throw new IllegalArgumentException("金额为负数");
         }
-        this.baseMapper.updateAmountWhenDecreaseConfirm(accountId, amount);
+        int count = this.baseMapper.updateAmountWhenDecreaseConfirm(accountId, amount);
+        if(count <= 0) {
+            throw new IllegalStateException("更新失败");
+        }
     }
     public void decreaseCancel(Long accountId, BigDecimal amount) {
         if (BigDecimal.ZERO.compareTo(amount) > 0) {
             throw new IllegalArgumentException("金额为负数");
         }
-        this.baseMapper.updateAmountWhenDecreaseCancel(accountId, amount);
+        int count = this.baseMapper.updateAmountWhenDecreaseCancel(accountId, amount);
+        if(count <= 0) {
+            throw new IllegalStateException("更新失败");
+        }
     }
 }
