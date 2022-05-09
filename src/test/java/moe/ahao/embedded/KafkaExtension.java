@@ -7,14 +7,15 @@ import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.Cluster;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class EmbeddedKafkaTest {
+public class KafkaExtension implements BeforeEachCallback, AfterEachCallback {
     public static final String HOST = "127.0.0.1:9092";
     public static final boolean AUTO_COMMIT = false;
 
@@ -27,8 +28,8 @@ public class EmbeddedKafkaTest {
     protected EmbeddedKafkaBroker broker;
     protected AdminClient adminClient;
 
-    @BeforeEach
-    public void beforeEach() {
+    @Override
+    public void beforeEach(ExtensionContext extensionContext) throws Exception {
         broker = new EmbeddedKafkaBroker(1).kafkaPorts(9092);
         broker.afterPropertiesSet();
 
@@ -37,7 +38,7 @@ public class EmbeddedKafkaTest {
         adminClient = AdminClient.create(adminProperties);
 
         // 1. 生产消息
-        Map<String, Object> producerProperties = EmbeddedKafkaTest.initProducerProperties();
+        Map<String, Object> producerProperties = this.initProducerProperties();
         // 2. 指定分区器
         producerProperties.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, SimplePartitioner.class.getName());
         try (Producer<String, String> producer = new KafkaProducer<>(producerProperties);) {
@@ -58,13 +59,13 @@ public class EmbeddedKafkaTest {
         }
     }
 
-    @AfterEach
-    public void afterAll() throws Exception {
+    @Override
+    public void afterEach(ExtensionContext extensionContext) throws Exception {
         if (adminClient != null) adminClient.close();
         if (broker != null) broker.destroy();
     }
 
-    protected static Map<String, Object> initProducerProperties() {
+    protected Map<String, Object> initProducerProperties() {
         Map<String, Object> prop = new HashMap<>();
         prop.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, HOST);
         prop.put(ProducerConfig.ACKS_CONFIG, "all");
@@ -77,7 +78,7 @@ public class EmbeddedKafkaTest {
         return prop;
     }
 
-    protected static Map<String, Object> initConsumerProperties() {
+    public Map<String, Object> initConsumerProperties() {
         Map<String, Object> prop = new HashMap<>();
         prop.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, HOST);
         prop.put(ConsumerConfig.GROUP_ID_CONFIG, "group");
@@ -88,6 +89,14 @@ public class EmbeddedKafkaTest {
         prop.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         prop.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         return prop;
+    }
+
+    public EmbeddedKafkaBroker getBroker() {
+        return broker;
+    }
+
+    public AdminClient getAdminClient() {
+        return adminClient;
     }
 
     public static class SimplePartitioner implements Partitioner {
