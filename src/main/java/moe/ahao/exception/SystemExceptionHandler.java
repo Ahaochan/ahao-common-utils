@@ -1,6 +1,6 @@
 package moe.ahao.exception;
 
-import moe.ahao.domain.entity.AjaxDTO;
+import moe.ahao.domain.entity.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
@@ -20,15 +20,15 @@ public class SystemExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public AjaxDTO runtimeException(RuntimeException e) {
+    public Result<Object> runtimeException(RuntimeException e) {
         logger.error("运行时异常:", e);
-        return AjaxDTO.failure("服务器异常! 请稍候重试!");
+        return Result.failure("服务器异常! 请稍候重试!");
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public AjaxDTO runtimeException(Exception e) {
+    public Result<Object> runtimeException(Exception e) {
         logger.error("异常:", e);
-        return AjaxDTO.failure("服务器异常! 请稍候重试!");
+        return Result.failure("服务器异常! 请稍候重试!");
     }
 }

@@ -1,6 +1,6 @@
 package moe.ahao.exception;
 
-import moe.ahao.domain.entity.AjaxDTO;
+import moe.ahao.domain.entity.Result;
 import org.mybatis.spring.MyBatisSystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,21 +21,21 @@ public class MyBatisExceptionHandler {
     public static final Logger logger = LoggerFactory.getLogger(MyBatisExceptionHandler.class);
 
     @ExceptionHandler(PersistenceException.class)
-    public AjaxDTO persistenceException(PersistenceException ex) {
+    public Result<Object> persistenceException(PersistenceException ex) {
         logger.error("Mybatis 错误", ex);
         Throwable cause = ex.getCause();
         String errorMsg = cause.getMessage();
-        return AjaxDTO.failure(errorMsg, errorMsg);
+        return Result.failure(errorMsg, errorMsg);
     }
 
     @ExceptionHandler(MyBatisSystemException.class)
-    public AjaxDTO myBatisSystemException(MyBatisSystemException ex) {
+    public Result<Object> myBatisSystemException(MyBatisSystemException ex) {
         logger.error("Mybatis 错误", ex);
         Throwable cause = ex.getCause(); // 获取 MyBatisSystemException 的 cause
         if (cause != null && cause.getCause() != null) {
             cause = cause.getCause(); // 获取 PersistenceException 的 cause
         }
         String errorMsg = cause == null ? ex.getMessage() : cause.getMessage();
-        return AjaxDTO.failure(errorMsg, errorMsg);
+        return Result.failure(errorMsg, errorMsg);
     }
 }

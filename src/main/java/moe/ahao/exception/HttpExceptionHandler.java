@@ -1,6 +1,6 @@
 package moe.ahao.exception;
 
-import moe.ahao.domain.entity.AjaxDTO;
+import moe.ahao.domain.entity.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -21,17 +21,17 @@ public class HttpExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public AjaxDTO methodNotAllowed(HttpServletRequest request, HttpRequestMethodNotSupportedException e) {
+    public Result<Object> methodNotAllowed(HttpServletRequest request, HttpRequestMethodNotSupportedException e) {
         String message = String.format("请求不支持%s方法, 请使用%s方法", e.getMethod(), e.getSupportedHttpMethods());
         logger.error(message, e);
-        return AjaxDTO.failure(message);
+        return Result.failure(message);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public AjaxDTO methodNotAllowed(HttpServletRequest request, MissingServletRequestParameterException e) {
+    public Result<Object> methodNotAllowed(HttpServletRequest request, MissingServletRequestParameterException e) {
         String message = String.format("请求缺少%s类型参数%s", e.getParameterType(), e.getParameterName());
         logger.error(message, e);
-        return AjaxDTO.failure(message);
+        return Result.failure(message);
     }
 }

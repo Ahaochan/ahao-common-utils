@@ -1,6 +1,6 @@
 package moe.ahao.util.commons.lang;
 
-import moe.ahao.domain.entity.AjaxDTO;
+import moe.ahao.domain.entity.Result;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -16,15 +16,15 @@ class BeanHelperTest {
 
     @Test
     void obj2map() {
-        AjaxDTO dto1 = AjaxDTO.success("123");
+        Result<Object> dto1 = Result.success("123");
         Map<String, Object> map1 = BeanHelper.obj2map(dto1);
 
-        Assertions.assertEquals(AjaxDTO.SUCCESS, map1.get("result"));
+        Assertions.assertEquals(Result.SUCCESS, map1.get("code"));
         Assertions.assertEquals("123", map1.get("msg"));
         Assertions.assertEquals(null, map1.get("obj"));
 
-        AjaxDTO dto2 = BeanHelper.map2obj(map1, AjaxDTO.class);
-        Assertions.assertEquals(dto1.getResult(), dto2.getResult());
+        Result<Object> dto2 = BeanHelper.map2obj(map1, Result.class);
+        Assertions.assertEquals(dto1.getCode(), dto2.getCode());
         Assertions.assertEquals(dto1.getMsg(), dto2.getMsg());
         Assertions.assertEquals(dto1.getObj(), dto2.getObj());
     }

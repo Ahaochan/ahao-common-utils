@@ -1,6 +1,6 @@
 package moe.ahao.exception;
 
-import moe.ahao.domain.entity.AjaxDTO;
+import moe.ahao.domain.entity.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -20,9 +20,9 @@ public class BizExceptionHandler {
 
     @ExceptionHandler(BizException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public AjaxDTO bizException(HttpServletRequest request, HttpServletResponse response, BizException e) {
+    public Result<Object> bizException(HttpServletRequest request, HttpServletResponse response, BizException e) {
         String message = String.format("发生业务异常: %s", e.getMessage());
         logger.warn(message, e);
-        return AjaxDTO.failure(message);
+        return Result.failure(message);
     }
 }

@@ -1,6 +1,6 @@
 package moe.ahao.exception;
 
-import moe.ahao.domain.entity.AjaxDTO;
+import moe.ahao.domain.entity.Result;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.annotation.Order;
@@ -29,39 +29,39 @@ import java.util.stream.Collectors;
 @ConditionalOnClass(DispatcherServlet.class)
 public class ValidatorExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public AjaxDTO methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public Result<Map<String, String>> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
         // 1. 找到 BindingResult 参数
         BindingResult bindingResult = ex.getBindingResult();
         List<ObjectError> errors = bindingResult.getAllErrors();
 
         // 2. 生成错误信息
         Map<String, String> fieldErrors = errors.stream()
-            .filter(e -> e instanceof FieldError)
-            .map(e -> (FieldError) e)
+            .filter(FieldError.class::isInstance)
+            .map(FieldError.class::cast)
             .collect(Collectors.toMap(FieldError::getField, e -> ObjectUtils.defaultIfNull(e.getDefaultMessage(), "")));
 
         String firstErrorMsg = errors.get(0).getDefaultMessage();
-        return AjaxDTO.failure(firstErrorMsg, fieldErrors);
+        return Result.failure(firstErrorMsg, fieldErrors);
     }
 
     @ExceptionHandler(BindException.class)
-    public AjaxDTO bindException(BindException ex) {
+    public Result<Map<String, String>> bindException(BindException ex) {
         // 1. 找到 BindingResult 参数
         BindingResult bindingResult = ex.getBindingResult();
         List<ObjectError> errors = bindingResult.getAllErrors();
 
         // 2. 生成错误信息
         Map<String, String> fieldErrors = errors.stream()
-            .filter(e -> e instanceof FieldError)
-            .map(e -> (FieldError) e)
+            .filter(FieldError.class::isInstance)
+            .map(FieldError.class::cast)
             .collect(Collectors.toMap(FieldError::getField, e -> ObjectUtils.defaultIfNull(e.getDefaultMessage(), "")));
 
         String firstErrorMsg = errors.get(0).getDefaultMessage();
-        return AjaxDTO.failure(firstErrorMsg, fieldErrors);
+        return Result.failure(firstErrorMsg, fieldErrors);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public AjaxDTO constraintViolationException(ConstraintViolationException ex) {
+    public Result<Map<String, String>> constraintViolationException(ConstraintViolationException ex) {
         // 1. 生成错误信息
         Map<String, String> fieldErrors = new HashMap<>();
         Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
@@ -73,6 +73,6 @@ public class ValidatorExceptionHandler {
         }
 
         String firstErrorMsg = fieldErrors.values().iterator().next();
-        return AjaxDTO.failure(firstErrorMsg, fieldErrors);
+        return Result.failure(firstErrorMsg, fieldErrors);
     }
 }

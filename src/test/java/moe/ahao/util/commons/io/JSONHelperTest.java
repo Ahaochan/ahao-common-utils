@@ -1,8 +1,8 @@
 package moe.ahao.util.commons.io;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import moe.ahao.domain.entity.AjaxDTO;
 import moe.ahao.domain.entity.BaseDO;
+import moe.ahao.domain.entity.Result;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,7 @@ import java.util.*;
 public class JSONHelperTest {
     @Test
     public void parse() {
-        AjaxDTO entity1 = AjaxDTO.get(1, "hello", Arrays.asList(1, 2, 3));
+        Result<List<Integer>> entity1 = Result.get(1, "hello", Arrays.asList(1, 2, 3));
 
         String json1 = JSONHelper.toString(entity1);
         System.out.println(json1);
@@ -26,9 +26,9 @@ public class JSONHelperTest {
         Assertions.assertNotEquals("", json2);
         Assertions.assertEquals(json1, json2);
 
-        AjaxDTO entity2 = JSONHelper.parse(json1, AjaxDTO.class);
+        Result<List<Integer>> entity2 = JSONHelper.parse(json1, new TypeReference<Result<List<Integer>>>() {});
         Assertions.assertNotNull(entity2);
-        Assertions.assertEquals(entity1.getResult(), entity2.getResult());
+        Assertions.assertEquals(entity1.getCode(), entity2.getCode());
         Assertions.assertEquals(entity1.getMsg(), entity2.getMsg());
         Assertions.assertEquals(entity1.getObj(), entity2.getObj());
     }
