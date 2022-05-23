@@ -14,10 +14,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -269,6 +266,9 @@ public class RedisHelper {
     }
     public static void hset(String hash, String key, Object value) {
         getRedisTemplate().opsForHash().put(hash, key, value);
+    }
+    public static void hset(String hash, Map<String, String> map) {
+        getStringRedisTemplate().opsForHash().putAll(hash, map);
     }
     @Deprecated
     public static <T extends Number> void hsetEx(String hash, String key, T value, long timeout, TimeUnit unit) {
