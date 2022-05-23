@@ -13,6 +13,7 @@ import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -47,18 +48,6 @@ public class RedisHelper {
     }
 
     // ======================================== 依赖 ==================================================
-
-
-    public static Boolean del(String key) {
-        return getRedisTemplate().delete(key);
-    }
-    public static Long dels(String... keys) {
-        return getRedisTemplate().delete(Arrays.asList(keys));
-    }
-    public static Boolean expire(String key, long timeout, TimeUnit unit) {
-        return getStringRedisTemplate().expire(key, timeout, unit);
-    }
-
     public static Long dbSize() {
         return getStringRedisTemplate().execute(RedisServerCommands::dbSize);
     }
@@ -69,17 +58,21 @@ public class RedisHelper {
     }
 
     // ======================================== string ==================================================
+    public static boolean del(String key) {
+        Boolean success = getRedisTemplate().delete(key);
+        return success == null ? false : success;
+    }
+    public static long dels(String... keys) {
+        Long count = getRedisTemplate().delete(Arrays.asList(keys));
+        return count == null ? 0 : count;
+    }
+    public static Boolean expire(String key, long timeout, TimeUnit unit) {
+        return getStringRedisTemplate().expire(key, timeout, unit);
+    }
+
     public static Boolean getBoolean(String key) {
         String value = getString(key);
         return value == null ? null : Boolean.valueOf(value);
-    }
-    public static Byte getByte(String key) {
-        String value = getString(key);
-        return value == null ? null : Byte.valueOf(value);
-    }
-    public static Short getShort(String key) {
-        String value = getString(key);
-        return value == null ? null : Short.valueOf(value);
     }
     public static Integer getInteger(String key) {
         String value = getString(key);
@@ -89,13 +82,9 @@ public class RedisHelper {
         String value = getString(key);
         return value == null ? null : Long.valueOf(value);
     }
-    public static Float getFloat(String key) {
+    public static BigDecimal getBigDecimal(String key) {
         String value = getString(key);
-        return value == null ? null : Float.valueOf(value);
-    }
-    public static Double getDouble(String key) {
-        String value = getString(key);
-        return value == null ? null : Double.valueOf(value);
+        return value == null ? null : new BigDecimal(value);
     }
     public static String getString(String key) {
         return getStringRedisTemplate().opsForValue().get(key);
@@ -104,7 +93,6 @@ public class RedisHelper {
         Object obj = getRedisTemplate().opsForValue().get(key);
         return JSONHelper.parse(JSONHelper.toString(obj), typeReference);
     }
-
 
     public static <T extends Number> void set(String key, T value) {
         set(key, value == null ? null : String.valueOf(value));
@@ -130,28 +118,40 @@ public class RedisHelper {
     public static void setEx(String key, Object value, long timeout, TimeUnit unit) {
         getRedisTemplate().opsForValue().set(key, value, timeout, unit);
     }
-    public static <T extends Number> Boolean setNx(String key, T value, long timeout, TimeUnit unit) {
-        return setNx(key, value == null ? null : String.valueOf(value), timeout, unit);
+    public static <T extends Number> Boolean setNx(String key, T value) {
+        return setNx(key, value == null ? null : String.valueOf(value));
     }
-    public static Boolean setNx(String key, Boolean value, long timeout, TimeUnit unit) {
-        return setNx(key, value == null ? null : String.valueOf(value), timeout, unit);
+    public static Boolean setNx(String key, Boolean value) {
+        return setNx(key, value == null ? null : String.valueOf(value));
     }
-    public static Boolean setNx(String key, String value, long timeout, TimeUnit unit) {
+    public static Boolean setNx(String key, String value) {
+        return getStringRedisTemplate().opsForValue().setIfAbsent(key, value);
+    }
+    public static Boolean setNx(String key, Object value) {
+        return getRedisTemplate().opsForValue().setIfAbsent(key, value);
+    }
+    public static <T extends Number> Boolean setNxEx(String key, T value, long timeout, TimeUnit unit) {
+        return setNxEx(key, value == null ? null : String.valueOf(value), timeout, unit);
+    }
+    public static Boolean setNxEx(String key, Boolean value, long timeout, TimeUnit unit) {
+        return setNxEx(key, value == null ? null : String.valueOf(value), timeout, unit);
+    }
+    public static Boolean setNxEx(String key, String value, long timeout, TimeUnit unit) {
         return getStringRedisTemplate().opsForValue().setIfAbsent(key, value, timeout, unit);
     }
-    public static Boolean setNx(String key, Object value, long timeout, TimeUnit unit) {
+    public static Boolean setNxEx(String key, Object value, long timeout, TimeUnit unit) {
         return getRedisTemplate().opsForValue().setIfAbsent(key, value, timeout, unit);
     }
     @Deprecated
-    public static <T extends Number> Boolean setNxOld(String key, T value, long timeout, TimeUnit unit) {
-        return setNxOld(key, value == null ? null : String.valueOf(value), timeout, unit);
+    public static <T extends Number> Boolean setNxExOld(String key, T value, long timeout, TimeUnit unit) {
+        return setNxExOld(key, value == null ? null : String.valueOf(value), timeout, unit);
     }
     @Deprecated
-    public static Boolean setNxOld(String key, Boolean value, long timeout, TimeUnit unit) {
-        return setNxOld(key, value == null ? null : String.valueOf(value), timeout, unit);
+    public static Boolean setNxExOld(String key, Boolean value, long timeout, TimeUnit unit) {
+        return setNxExOld(key, value == null ? null : String.valueOf(value), timeout, unit);
     }
     @Deprecated
-    public static Boolean setNxOld(String key, String value, long timeout, TimeUnit unit) {
+    public static Boolean setNxExOld(String key, String value, long timeout, TimeUnit unit) {
         StringRedisTemplate redisTemplate = getStringRedisTemplate();
         byte[] rawKey = ((RedisSerializer) redisTemplate.getKeySerializer()).serialize(key);
         byte[] rawValue = ((RedisSerializer) redisTemplate.getValueSerializer()).serialize(value);
@@ -160,7 +160,7 @@ public class RedisHelper {
             connection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent()), true);
     }
     @Deprecated
-    public static Boolean setNxOld(String key, Object value, long timeout, TimeUnit unit) {
+    public static Boolean setNxExOld(String key, Object value, long timeout, TimeUnit unit) {
         RedisTemplate<String, Object> redisTemplate = getRedisTemplate();
         byte[] rawKey = ((RedisSerializer) redisTemplate.getKeySerializer()).serialize(key);
         byte[] rawValue = ((RedisSerializer) redisTemplate.getValueSerializer()).serialize(value);
@@ -168,7 +168,6 @@ public class RedisHelper {
         return redisTemplate.execute((connection) ->
             connection.set(rawKey, rawValue, expiration, RedisStringCommands.SetOption.ifAbsent()), true);
     }
-
 
     public static Long incr(String key) {
         return getStringRedisTemplate().opsForValue().increment(key);
@@ -213,64 +212,104 @@ public class RedisHelper {
     // ======================================== string ==================================================
 
     // ======================================== hash ==================================================
-    public static long hdel(String key, Object... fields) {
-        Long count = getRedisTemplate().opsForHash().delete(key, fields);
+    public static long hdel(String key, String... keys) {
+        Long count = getRedisTemplate().opsForHash().delete(key, keys);
         return count == null ? 0 : count;
     }
-
-    public static boolean hexists(String key, Object field) {
-        Boolean exist = getRedisTemplate().opsForHash().hasKey(key, field);
+    public static boolean hexists(String hash, String key) {
+        Boolean exist = getRedisTemplate().opsForHash().hasKey(hash, key);
         return exist == null ? false : exist;
     }
 
-    public static Boolean hgetBoolean(String key, Object field) {
-        String value = hgetString(key, field);
+    public static Boolean hgetBoolean(String hash, String key) {
+        String value = hgetString(hash, key);
         return value == null ? null : Boolean.valueOf(value);
     }
-    public static Byte hgetByte(String key, Object field) {
-        String value = hgetString(key, field);
+    public static Byte hgetByte(String hash, String key) {
+        String value = hgetString(hash, key);
         return value == null ? null : Byte.valueOf(value);
     }
-    public static Short hgetShort(String key, Object field) {
-        String value = hgetString(key, field);
+    public static Short hgetShort(String hash, String key) {
+        String value = hgetString(hash, key);
         return value == null ? null : Short.valueOf(value);
     }
-    public static Integer hgetInteger(String key, Object field) {
-        String value = hgetString(key, field);
+    public static Integer hgetInteger(String hash, String key) {
+        String value = hgetString(hash, key);
         return value == null ? null : Integer.valueOf(value);
     }
-    public static Long hgetLong(String key, Object field) {
-        String value = hgetString(key, field);
+    public static Long hgetLong(String hash, String key) {
+        String value = hgetString(hash, key);
         return value == null ? null : Long.valueOf(value);
     }
-    public static Float hgetFloat(String key, Object field) {
-        String value = hgetString(key, field);
+    public static Float hgetFloat(String hash, String key) {
+        String value = hgetString(hash, key);
         return value == null ? null : Float.valueOf(value);
     }
-    public static Double hgetDouble(String key, Object field) {
-        String value = hgetString(key, field);
+    public static Double hgetDouble(String hash, String field) {
+        String value = hgetString(hash, field);
         return value == null ? null : Double.valueOf(value);
     }
-    public static String hgetString(String key, Object field) {
-        Object value = getStringRedisTemplate().opsForHash().get(key, field);
+    public static String hgetString(String hash, String field) {
+        Object value = getStringRedisTemplate().opsForHash().get(hash, field);
         return value == null ? null : String.valueOf(value);
     }
-    public static <T> T hgetObject(String key, String field, TypeReference<T> typeReference) {
-        Object obj = getRedisTemplate().opsForHash().get(key, field);
+    public static <T> T hgetObject(String hash, String field, TypeReference<T> typeReference) {
+        Object obj = getRedisTemplate().opsForHash().get(hash, field);
         return JSONHelper.parse(JSONHelper.toString(obj), typeReference);
     }
 
-    public static Long hincrBy(String key, Object field, long value) {
-        return getStringRedisTemplate().opsForHash().increment(key, field, value);
+    public static <T extends Number> void hset(String hash, String key, T value) {
+        hset(hash, key, value == null ? null : String.valueOf(value));
     }
-    public static Double hincrBy(String key, Object field, double value) {
-        return getStringRedisTemplate().opsForHash().increment(key, field, value);
+    public static void hset(String hash, String key, Boolean value) {
+        hset(hash, key, value == null ? null : String.valueOf(value));
     }
-    public static Long hdecrBy(String key, Object field, long value) {
-        return getStringRedisTemplate().opsForHash().increment(key, field, value * -1);
+    public static void hset(String hash, String key, String value) {
+        getStringRedisTemplate().opsForHash().put(hash, key, value);
     }
-    public static Double hdecrBy(String key, Object field, double value) {
-        return getStringRedisTemplate().opsForHash().increment(key, field, value * -1);
+    public static void hset(String hash, String key, Object value) {
+        getRedisTemplate().opsForHash().put(hash, key, value);
+    }
+    @Deprecated
+    public static <T extends Number> void hsetEx(String hash, String key, T value, long timeout, TimeUnit unit) {
+        throw new UnsupportedOperationException("Redis不支持");
+    }
+    @Deprecated
+    public static void hsetEx(String hash, String key, Boolean value, long timeout, TimeUnit unit) {
+        throw new UnsupportedOperationException("Redis不支持");
+    }
+    @Deprecated
+    public static void hsetEx(String hash, String key, String value, long timeout, TimeUnit unit) {
+        throw new UnsupportedOperationException("Redis不支持");
+    }
+    @Deprecated
+    public static void hsetEx(String hash, String key, Object value, long timeout, TimeUnit unit) {
+        throw new UnsupportedOperationException("Redis不支持");
+    }
+    public static <T extends Number> Boolean hsetNx(String hash, String key, T value) {
+        return hsetNx(hash, key, value == null ? null : String.valueOf(value));
+    }
+    public static Boolean hsetNx(String hash, String key, Boolean value) {
+        return hsetNx(hash, key, value == null ? null : String.valueOf(value));
+    }
+    public static Boolean hsetNx(String hash, String key, String value) {
+        return getStringRedisTemplate().opsForHash().putIfAbsent(hash, key, value);
+    }
+    public static Boolean hsetNx(String hash, String key, Object value) {
+        return getRedisTemplate().opsForHash().putIfAbsent(hash, key, value);
+    }
+
+    public static Long hincrBy(String hash, String key, long value) {
+        return getStringRedisTemplate().opsForHash().increment(hash, key, value);
+    }
+    public static Double hincrBy(String hash, String key, double value) {
+        return getStringRedisTemplate().opsForHash().increment(hash, key, value);
+    }
+    public static Long hdecrBy(String hash, String key, long value) {
+        return getStringRedisTemplate().opsForHash().increment(hash, key, value * -1);
+    }
+    public static Double hdecrBy(String hash, String key, double value) {
+        return getStringRedisTemplate().opsForHash().increment(hash, key, value * -1);
     }
     // ======================================== hash ==================================================
 
