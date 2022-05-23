@@ -267,8 +267,11 @@ public class RedisHelper {
     public static void hset(String hash, String key, Object value) {
         getRedisTemplate().opsForHash().put(hash, key, value);
     }
-    public static void hset(String hash, Map<String, String> map) {
+    public static void hmset1(String hash, Map<String, String> map) {
         getStringRedisTemplate().opsForHash().putAll(hash, map);
+    }
+    public static void hmset2(String hash, Map<String, Object> map) {
+        getRedisTemplate().opsForHash().putAll(hash, map);
     }
     @Deprecated
     public static <T extends Number> void hsetEx(String hash, String key, T value, long timeout, TimeUnit unit) {
