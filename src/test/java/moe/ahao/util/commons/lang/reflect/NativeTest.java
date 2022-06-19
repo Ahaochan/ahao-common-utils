@@ -4,19 +4,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 public class NativeTest {
     public interface InterfaceA {
-        String methodA();
+        String methodA(String str);
     }
 
     public interface InterfaceB1 extends InterfaceA {
-        String methodB();
+        String methodB(String str);
     }
 
     public interface InterfaceB2 extends InterfaceA {
-        String methodA();
-        String methodB();
+        String methodA(String str);
+        String methodB(String str);
     }
 
     @Test
@@ -34,5 +35,27 @@ public class NativeTest {
         Assertions.assertEquals(2, b2Methods.length);
         Assertions.assertEquals("methodB", b2Methods[0].getName());
         Assertions.assertEquals("methodA", b2Methods[1].getName());
+    }
+
+    @Test
+    public void method() throws Exception {
+        InterfaceA obj = str -> str + "methodA";
+        Class<?> clazz = obj.getClass();
+        Method[] methods = clazz.getMethods();
+        System.out.println("方法（包括父类）数量: " + methods.length);
+        Method[] declaredMethods = clazz.getDeclaredMethods();
+        System.out.println("方法（不包括父类）数量: " + declaredMethods.length);
+
+        Method methodA = clazz.getDeclaredMethod("methodA", List.class);
+        Assertions.assertNotNull(methodA);
+        System.out.println("方法: " + methodA.getName());
+
+        Class<?> declaringClass = methodA.getDeclaringClass();
+        System.out.println("在某个类下:" + declaringClass.getName());
+
+        String string = methodA.toString();
+        String genericString = methodA.toGenericString();
+        System.out.println(string);
+        System.out.println(genericString);
     }
 }
