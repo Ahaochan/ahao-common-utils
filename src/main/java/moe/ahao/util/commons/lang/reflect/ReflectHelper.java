@@ -221,8 +221,11 @@ public class ReflectHelper {
         field.setAccessible(true);
 
         try {
+            if(value == null) {
+                field.set(obj, value);
+            }
             // 1. 解析为 Boolean
-            if (typeClazz.equals(Boolean.TYPE)) {
+            else if (typeClazz.equals(Boolean.TYPE)) {
                 field.setBoolean(obj, Boolean.parseBoolean(value.toString()));
             } else if (typeClazz.equals(Boolean.class)) {
                 field.set(obj, Boolean.valueOf(value.toString()));
