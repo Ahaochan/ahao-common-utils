@@ -254,6 +254,10 @@ public class RedisHelper {
         Object obj = getRedisTemplate().opsForHash().get(hash, field);
         return JSONHelper.parse(JSONHelper.toString(obj), typeReference);
     }
+    public static Map<String, String> hmget(String hash) {
+        Map map = getStringRedisTemplate().opsForHash().entries(hash);
+        return map;
+    }
 
     public static <T extends Number> void hset(String hash, String key, T value) {
         hset(hash, key, value == null ? null : String.valueOf(value));
