@@ -18,13 +18,13 @@
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <lombok.mapstruct.version>0.2.0</lombok.mapstruct.version>
 
-        <spring.boot.version>2.3.12.RELEASE</spring.boot.version>
+        <spring.boot.version>2.6.3</spring.boot.version>
         <spring.boot.admin.version>2.2.1</spring.boot.admin.version>
-        <spring.cloud.version>Hoxton.SR12</spring.cloud.version>
-        <spring.cloud.alibaba.version>2.2.7.RELEASE</spring.cloud.alibaba.version>
+        <spring.cloud.version>2021.0.1</spring.cloud.version>
+        <spring.cloud.alibaba.version>2021.0.1.0</spring.cloud.alibaba.version>
         <spring.swagger.version>3.0.0</spring.swagger.version>
         <spring.swagger.bootstrap.version>1.9.6</spring.swagger.bootstrap.version>
-        <spring.dubbo.version>2.7.8</spring.dubbo.version>
+        <spring.dubbo.version>2.7.16</spring.dubbo.version>
 
         <apache.commons.beanutils.version>1.9.4</apache.commons.beanutils.version>
         <apache.commons.collections4.version>4.4</apache.commons.collections4.version>
@@ -245,6 +245,12 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+            <version>2.2.10.RELEASE</version>
             <scope>provided</scope>
         </dependency>
         <!--======================================================= Spring Boot =======================================================-->

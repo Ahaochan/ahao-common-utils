@@ -12,7 +12,6 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -202,8 +201,6 @@ public class RedisHelper {
                 String key = cursor.next();
                 consumer.accept(key);
             }
-        } catch (IOException e) {
-            logger.error("scan Redis 失败, pattern:{}", pattern, e);
         }
     }
     // ======================================== string ==================================================

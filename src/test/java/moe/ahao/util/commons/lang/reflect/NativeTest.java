@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
 public class NativeTest {
     public interface InterfaceA {
@@ -46,7 +45,7 @@ public class NativeTest {
         Method[] declaredMethods = clazz.getDeclaredMethods();
         System.out.println("方法（不包括父类）数量: " + declaredMethods.length);
 
-        Method methodA = clazz.getDeclaredMethod("methodA", List.class);
+        Method methodA = clazz.getDeclaredMethod("methodA", String.class);
         Assertions.assertNotNull(methodA);
         System.out.println("方法: " + methodA.getName());
 
