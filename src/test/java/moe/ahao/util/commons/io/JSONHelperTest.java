@@ -1,6 +1,12 @@
 package moe.ahao.util.commons.io;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import lombok.Getter;
+import lombok.Setter;
 import moe.ahao.domain.entity.BaseDO;
 import moe.ahao.domain.entity.Result;
 import org.junit.jupiter.api.Assertions;
@@ -94,5 +100,39 @@ public class JSONHelperTest {
         int int2 = JSONHelper.getInt(json, "deep1.deep2.1");
         Assertions.assertEquals(1, int1);
         Assertions.assertEquals(2, int2);
+    }
+
+    @Test
+    void noDefaultConstructor() throws Exception {
+        // 1. 没有无参构造函数的对象的序列化
+        ObjectMapper om1 = new ObjectMapper();
+        NoDefaultConstructor data1 = new NoDefaultConstructor("hello");
+        String json = om1.writeValueAsString(data1);
+        System.out.println(json);
+        Assertions.assertNotNull(json);
+
+        // 2. 没有无参构造函数的对象的反序列化, 报错cannot deserialize from Object value (no delegate- or property-based Creator)
+        Assertions.assertThrows(MismatchedInputException.class, () -> om1.readValue(json, NoDefaultConstructor.class)).printStackTrace();
+
+        // 3. 没有无参构造函数的对象的反序列化, 使用MinIn解决
+        ObjectMapper om2 = new ObjectMapper();
+        om2.addMixIn(NoDefaultConstructor.class, NoDefaultConstructorCrator.class);
+        NoDefaultConstructor data2 = om2.readValue(json, NoDefaultConstructor.class);
+        System.out.println(data2);
+        Assertions.assertEquals(data1.getData(), data2.getData());
+    }
+
+    private static abstract class NoDefaultConstructorCrator {
+        @JsonCreator
+        public NoDefaultConstructorCrator(@JsonProperty("data") String data) {
+        }
+    }
+
+    private static class NoDefaultConstructor {
+        @Getter @Setter
+        private String data;
+        public NoDefaultConstructor(String data) {
+            this.data = data;
+        }
     }
 }
