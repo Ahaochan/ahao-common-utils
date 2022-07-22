@@ -253,6 +253,11 @@
             <version>2.2.10.RELEASE</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <!--======================================================= Spring Boot =======================================================-->
 
         <!--======================================================= Shiro =======================================================-->
