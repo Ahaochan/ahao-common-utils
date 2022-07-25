@@ -1,5 +1,7 @@
 package moe.ahao.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import moe.ahao.util.commons.CloneHelper;
 
 import javax.persistence.MappedSuperclass;
@@ -8,18 +10,25 @@ import java.util.Objects;
 
 /**
  * Created by Ahaochan on 2017/6/5.
+ * <p>
  * dao返回的entity父类, 也可用于Mybatis返回插入id
  * 返回插入id的Mybatis用法:
+ * <pre>
  * int saveUser(@Param("baseDO") BaseDO baseDO, @Param("name") String name);
- * <insert id="saveUser" useGeneratedKeys="true" keyProperty="baseDO.id" keyColumn="id">
- * insert into user (name) values (#{name});
- * </insert>
+ * </pre>
+ * <pre>
+ * &lt;insert id="saveUser" useGeneratedKeys="true" keyProperty="baseDO.id" keyColumn="id"&gt;
+ *     insert into user (name) values (#{name});
+ * &lt;/insert&gt;
+ * </pre>
  */
 @MappedSuperclass
 public class BaseDO {
     private Long createBy;
     private Long updateBy;
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
     public BaseDO() {
