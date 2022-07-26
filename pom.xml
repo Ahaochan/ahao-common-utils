@@ -45,6 +45,8 @@
         <mybatis.spring.boot.version>2.1.1</mybatis.spring.boot.version>
         <mybatis.plus.version>3.4.1</mybatis.plus.version>
 
+        <xxl.job.version>2.3.0</xxl.job.version>
+
         <redission.version>3.15.5</redission.version>
         <embedded.redis.version>0.6</embedded.redis.version>
     </properties>
@@ -292,6 +294,14 @@
         </dependency>
         <!--======================================================= 数据库相关 =======================================================-->
 
+        <!--======================================================= xxl-job =======================================================-->
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
+            <version>${xxl.job.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--======================================================= xxl-job =======================================================-->
 
         <!--======================================================= 单元测试 =======================================================-->
         <dependency>
