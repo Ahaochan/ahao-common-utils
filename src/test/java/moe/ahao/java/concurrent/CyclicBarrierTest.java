@@ -1,4 +1,4 @@
-package moe.ahao.util.commons.juc;
+package moe.ahao.java.concurrent;
 
 import org.junit.jupiter.api.Test;
 
