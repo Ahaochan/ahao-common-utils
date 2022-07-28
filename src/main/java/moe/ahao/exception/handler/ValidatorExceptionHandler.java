@@ -1,8 +1,9 @@
-package moe.ahao.exception;
+package moe.ahao.exception.handler;
 
 import moe.ahao.domain.entity.Result;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -25,8 +26,8 @@ import java.util.stream.Collectors;
  * Spring校验异常拦截器
  */
 @RestControllerAdvice("moe.ahao")
-@Order(0)
 @ConditionalOnClass(DispatcherServlet.class)
+@Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class ValidatorExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result<Map<String, String>> methodArgumentNotValidException(MethodArgumentNotValidException ex) {

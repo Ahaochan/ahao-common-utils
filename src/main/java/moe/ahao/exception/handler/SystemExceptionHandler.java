@@ -1,4 +1,4 @@
-package moe.ahao.exception;
+package moe.ahao.exception.handler;
 
 import moe.ahao.domain.entity.Result;
 import org.slf4j.Logger;

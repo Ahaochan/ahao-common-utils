@@ -1,9 +1,11 @@
-package moe.ahao.exception;
+package moe.ahao.exception.handler;
 
 import moe.ahao.domain.entity.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 @ConditionalOnClass(DispatcherServlet.class)
+@Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class HttpExceptionHandler {
     public static final Logger logger = LoggerFactory.getLogger(HttpExceptionHandler.class);
 
