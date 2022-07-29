@@ -19,7 +19,7 @@ import java.util.List;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(MybatisSqlSessionFactoryBean.class)
-public class MyBatisPlusConfig {
+public class MyBatisPlusAutoConfig {
     /**
      * 自动填充字段, 配合 {@link TableField}
      * @see <a href="https://baomidou.com/pages/4c6bcf/">自动填充功能</a>
