@@ -1,11 +1,11 @@
 package moe.ahao.spring.web.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.http.JacksonHttpMessageConvertersConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -64,12 +64,12 @@ public class JacksonHttpMessageConvertersWebMvcConfigurer {
     @Getter
     @AllArgsConstructor
     public enum PropertyNamingStrategyConverter {
-        SNAKE_CASE(PropertyNamingStrategies.SNAKE_CASE, new MediaType("application", "vnd.snake.case+json")),
-        UPPER_CAMEL_CASE(PropertyNamingStrategies.UPPER_CAMEL_CASE, new MediaType("application", "vnd.upper.camel.case+json")),
-        LOWER_CAMEL_CASE(PropertyNamingStrategies.LOWER_CAMEL_CASE, new MediaType("application", "vnd.lower.camel.case+json")),
-        LOWER_CASE(PropertyNamingStrategies.LOWER_CASE, new MediaType("application", "vnd.lower.case+json")),
-        KEBAB_CASE(PropertyNamingStrategies.KEBAB_CASE, new MediaType("application", "vnd.kebab+json")),
-        LOWER_DOT_CASE(PropertyNamingStrategies.LOWER_DOT_CASE, new MediaType("application", "vnd.lower.dot+json")),
+        SNAKE_CASE(PropertyNamingStrategy.SNAKE_CASE, new MediaType("application", "vnd.snake.case+json")),
+        UPPER_CAMEL_CASE(PropertyNamingStrategy.UPPER_CAMEL_CASE, new MediaType("application", "vnd.upper.camel.case+json")),
+        LOWER_CAMEL_CASE(PropertyNamingStrategy.LOWER_CAMEL_CASE, new MediaType("application", "vnd.lower.camel.case+json")),
+        LOWER_CASE(PropertyNamingStrategy.LOWER_CASE, new MediaType("application", "vnd.lower.case+json")),
+        KEBAB_CASE(PropertyNamingStrategy.KEBAB_CASE, new MediaType("application", "vnd.kebab+json")),
+        LOWER_DOT_CASE(PropertyNamingStrategy.LOWER_DOT_CASE, new MediaType("application", "vnd.lower.dot+json")),
         ;
         private final PropertyNamingStrategy strategy;
         private final MediaType mediaType;
