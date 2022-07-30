@@ -60,7 +60,7 @@ public class MultiDateFormat extends DateFormat {
     public void setCalendar(Calendar newCalendar) {
         this.execute(dateFormat -> {
             dateFormat.setCalendar(newCalendar);
-            return null;
+            return true;
         });
     }
 
@@ -73,7 +73,7 @@ public class MultiDateFormat extends DateFormat {
     public void setNumberFormat(NumberFormat newNumberFormat) {
         this.execute(dateFormat -> {
             dateFormat.setNumberFormat(newNumberFormat);
-            return null;
+            return true;
         });
     }
 
@@ -86,7 +86,7 @@ public class MultiDateFormat extends DateFormat {
     public void setTimeZone(TimeZone zone) {
         this.execute(dateFormat -> {
             dateFormat.setTimeZone(zone);
-            return null;
+            return true;
         });
     }
 
@@ -99,7 +99,7 @@ public class MultiDateFormat extends DateFormat {
     public void setLenient(boolean lenient) {
         this.execute(dateFormat -> {
             dateFormat.setLenient(lenient);
-            return null;
+            return true;
         });
     }
 
