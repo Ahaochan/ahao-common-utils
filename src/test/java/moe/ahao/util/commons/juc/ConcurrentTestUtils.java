@@ -16,9 +16,10 @@ public class ConcurrentTestUtils {
                 try {
                     cyclicBarrier.await();
                     taskList.get(index).run();
-                    countDownLatch.countDown();
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    countDownLatch.countDown();
                 }
             }).start();
         }
