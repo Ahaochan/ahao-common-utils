@@ -135,4 +135,26 @@ public class JSONHelperTest {
             this.data = data;
         }
     }
+
+    @Test
+    void mergeJSON() {
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("key1", 1);
+        map1.put("key2", "hhh");
+
+        Map<String, Object> map2 = new HashMap<>();
+        map1.put("key3", 1);
+        map1.put("key4", "hhh");
+
+        String mergeJSON = JSONHelper.mergeJSON(JSONHelper.toString(map1), JSONHelper.toString(map2));
+        System.out.println(mergeJSON);
+        Map<String, Object> map3 = JSONHelper.parse(mergeJSON, new TypeReference<Map<String, Object>>() {});
+
+        for (Map.Entry<String, Object> entry : map1.entrySet()) {
+            Assertions.assertEquals(entry.getValue(), map3.get(entry.getKey()));
+        }
+        for (Map.Entry<String, Object> entry : map2.entrySet()) {
+            Assertions.assertEquals(entry.getValue(), map3.get(entry.getKey()));
+        }
+    }
 }

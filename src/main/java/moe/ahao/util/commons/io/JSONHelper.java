@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import moe.ahao.util.spring.SpringContextHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -138,5 +139,18 @@ public class JSONHelper {
     public static boolean getBoolean(String json, String key) {
         String value = getString(json, key);
         return Boolean.parseBoolean(value);
+    }
+
+    public static String mergeJSON(String... jsonArray) {
+        ObjectNode root = getOm().createObjectNode();
+        for (String json : jsonArray) {
+            try {
+                ObjectNode jsonNode = (ObjectNode) getOm().readTree(json);
+                root.setAll(jsonNode);
+            } catch (JsonProcessingException e) {
+                logger.error("json处理合并失败, json:{}", json, e);
+            }
+        }
+        return root.toString();
     }
 }
