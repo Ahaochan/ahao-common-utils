@@ -11,7 +11,7 @@ import java.sql.Statement;
 
 public class DBTestUtils {
     public static final String MYSQL_HOST = "192.168.19.128:3306";
-    public static final String MYSQL_PARAM = "?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&tinyInt1isBit=false&rewriteBatchedStatements=true&useAffectedRows=true";
+    public static final String MYSQL_PARAM = "?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=true&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&tinyInt1isBit=false&rewriteBatchedStatements=true&useAffectedRows=true";
     public static final String MYSQL_ROOT = "root";
     public static final String MYSQL_PW = "root";
 
