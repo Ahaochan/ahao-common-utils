@@ -17,6 +17,7 @@
         <java.persistence.version>2.2</java.persistence.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <lombok.mapstruct.version>0.2.0</lombok.mapstruct.version>
+        <reflections.version>0.10.2</reflections.version>
 
         <spring.boot.version>2.6.3</spring.boot.version>
         <spring.boot.admin.version>2.2.1</spring.boot.admin.version>
@@ -181,6 +182,11 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>${reflections.version}</version>
         </dependency>
         <!--======================================================= 其他工具类 =======================================================-->
 

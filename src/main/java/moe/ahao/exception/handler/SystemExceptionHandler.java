@@ -29,4 +29,10 @@ public class SystemExceptionHandler {
         logger.error("异常:", e);
         return Result.failure("服务器异常! 请稍候重试!");
     }
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public Result<Object> illegalArgumentException(IllegalArgumentException e) {
+        logger.error("业务方法参数检查不通过", e);
+        return Result.failure("业务方法参数检查不通过!");
+    }
 }
