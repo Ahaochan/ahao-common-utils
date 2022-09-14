@@ -16,7 +16,7 @@ import java.util.List;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-public class JacksonHttpMessageConvertersWebMvcConfigurer {
+public class JacksonHttpMessageConvertersWebMvcAutoConfig {
 
     /**
      * 覆盖 {@link JacksonHttpMessageConvertersConfiguration} 的配置, 移除 application/*+json 的支持

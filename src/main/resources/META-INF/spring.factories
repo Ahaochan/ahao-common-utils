@@ -1,5 +1,10 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 moe.ahao.mq.rabbit.RabbitAutoConfig,\
 moe.ahao.hystrix.HystrixAutoConfig,\
-moe.ahao.transmit.TransmitterAutoConfig
-
+moe.ahao.transmit.TransmitterAutoConfig,\
+moe.ahao.elastic.elasticsearch.ElasticsearchAutoConfig,\
+moe.ahao.mybatis.MyBatisPlusAutoConfig,\
+moe.ahao.redis.RedisAutoConfig,\
+moe.ahao.sentinel.SentinelAutoConfig,\
+moe.ahao.spring.web.config.JacksonHttpMessageConvertersWebMvcAutoConfig,\
+moe.ahao.xxljob.XxlJobAutoConfig
