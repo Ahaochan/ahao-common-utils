@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(RestClientBuilder.class)
-public class ElasticsearchConfig {
+public class ElasticsearchAutoConfig {
     /**
      * 建立连接超时时间
      */
