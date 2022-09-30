@@ -102,7 +102,7 @@ public class ReflectHelper {
         return method;
     }
     public static <T> T executeMethod(Object obj, String methodName, Object... parameters) {
-        if(obj == null || StringUtils.isEmpty(methodName) || ArrayUtils.isEmpty(parameters)) {
+        if(obj == null || StringUtils.isEmpty(methodName) || parameters == null) {
             return null;
         }
         Class<?> clazz = obj.getClass();
