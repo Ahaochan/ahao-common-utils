@@ -46,7 +46,7 @@ public enum CommonBizExceptionEnum implements BizExceptionEnum<BizException> {
      */
     SERVER_ILLEGAL_ARGUMENT_ERROR(2001, "业务方法参数检查不通过"),
     ;
-    private final int code;
+    private final Integer code;
     private final String message;
 
     public BizException msg(Object... args) {
