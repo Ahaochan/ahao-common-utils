@@ -11,7 +11,7 @@ public class BizException extends RuntimeException {
     // 保证不执行fillInStackTrace()方法
     public static final boolean WRITEABLE_STACK_TRACE = false;
 
-    private int code;
+    private Integer code;
     private String message;
 
     public BizException(int code, String message) {

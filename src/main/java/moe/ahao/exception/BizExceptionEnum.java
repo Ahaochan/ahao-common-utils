@@ -1,7 +1,7 @@
 package moe.ahao.exception;
 
 public interface BizExceptionEnum<T extends BizException> {
-    int getCode();
+    Integer getCode();
     String getMessage();
     T msg(Object... args);
 
