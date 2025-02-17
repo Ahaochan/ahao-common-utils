@@ -45,6 +45,10 @@ public enum CommonBizExceptionEnum implements BizExceptionEnum<BizException> {
      * java.lang.IllegalArgumentException
      */
     SERVER_ILLEGAL_ARGUMENT_ERROR(2001, "业务方法参数检查不通过"),
+    /**
+     * 枚举参数异常
+     */
+    ENUM_PARAM_MUST_BE_IN_ALLOWABLE_VALUE(2002, "[%s]的取值必须为%s"),
     ;
     private final Integer code;
     private final String message;
